@@ -4,6 +4,7 @@ import Sidebar from "@/components/Sidebar";
 import { useLocations } from "@/hooks/useLocations";
 import { useQuery } from "@tanstack/react-query";
 import StarRating from "@/components/StarRating";
+import ExternalDataDisplay from "@/components/ExternalDataDisplay";
 
 const LocationDetail = () => {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
