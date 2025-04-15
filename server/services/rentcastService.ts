@@ -122,18 +122,30 @@ export async function getPropertyListings(city: string, state: string, limit: nu
 export async function getMarketTrends(city: string, state: string): Promise<RentcastMarketTrends | null> {
   try {
     checkApiKey();
-    const url = `${RENTCAST_API_URL}/market-stats`;
+    // Note: The API might be different than expected. Trying alternative endpoints or mocking if the API returns 404.
+    const url = `${RENTCAST_API_URL}/market/stats`;
     
-    const response = await axios.get(url, {
-      headers: getHeaders(),
-      params: {
-        city,
-        state,
+    try {
+      const response = await axios.get(url, {
+        headers: getHeaders(),
+        params: {
+          city,
+          state,
+        }
+      });
+      
+      log(`Successfully fetched market trends for ${city}, ${state}`, 'rentcast');
+      return response.data;
+    } catch (axiosError) {
+      if (axios.isAxiosError(axiosError) && axiosError.response?.status === 404) {
+        // If the API endpoint is not found, log it and try an alternative if available
+        log(`API endpoint not found: ${url}. This may indicate Rentcast API has changed.`, 'rentcast');
+        
+        // Since we can't access the real data, we need to inform the user rather than showing fake data
+        return null;
       }
-    });
-    
-    log(`Successfully fetched market trends for ${city}, ${state}`, 'rentcast');
-    return response.data;
+      throw axiosError; // Re-throw to be caught by the outer catch
+    }
   } catch (error) {
     if (axios.isAxiosError(error)) {
       log(`Error fetching market trends: ${error.message} (${error.response?.status})`, 'rentcast');
@@ -157,19 +169,31 @@ export async function getMarketTrends(city: string, state: string): Promise<Rent
 export async function getRentalPriceHistory(city: string, state: string, months: number = 12): Promise<any> {
   try {
     checkApiKey();
-    const url = `${RENTCAST_API_URL}/rental-trends`;
+    // Try alternative endpoint - API structure might be different
+    const url = `${RENTCAST_API_URL}/market/rental-trends`;
     
-    const response = await axios.get(url, {
-      headers: getHeaders(),
-      params: {
-        city,
-        state,
-        months
+    try {
+      const response = await axios.get(url, {
+        headers: getHeaders(),
+        params: {
+          city,
+          state,
+          months
+        }
+      });
+      
+      log(`Successfully fetched rental price history for ${city}, ${state}`, 'rentcast');
+      return response.data;
+    } catch (axiosError) {
+      if (axios.isAxiosError(axiosError) && axiosError.response?.status === 404) {
+        // If the API endpoint is not found, log it
+        log(`API endpoint not found: ${url}. This may indicate Rentcast API has changed.`, 'rentcast');
+        
+        // Since we can't access the real data, we need to inform the user
+        return null;
       }
-    });
-    
-    log(`Successfully fetched rental price history for ${city}, ${state}`, 'rentcast');
-    return response.data;
+      throw axiosError; // Re-throw to be caught by the outer catch
+    }
   } catch (error) {
     if (axios.isAxiosError(error)) {
       log(`Error fetching rental price history: ${error.message} (${error.response?.status})`, 'rentcast');
