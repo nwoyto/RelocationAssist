@@ -266,7 +266,7 @@ const LocationDetail = () => {
                             <h4 className="font-medium mb-3">Housing Market Trends</h4>
                             <div className="h-64 bg-neutral-50 rounded overflow-hidden">
                               <img 
-                                src={`https://source.unsplash.com/featured/800x400?housing,chart,market,graph&sig=${location.name}`} 
+                                src={`https://placehold.co/800x400?text=Housing+market+trends+for+${location.name}`} 
                                 alt={`Housing market price trends for ${location.name}`}
                                 className="w-full h-full object-cover"
                               />
@@ -516,7 +516,7 @@ const LocationDetail = () => {
                             <h4 className="font-medium mb-3">Safety Comparison</h4>
                             <div className="h-64 bg-neutral-50 rounded overflow-hidden">
                               <img 
-                                src={`https://source.unsplash.com/featured/800x400?crime,safety,chart,stats&sig=${location.name}`} 
+                                src={`https://placehold.co/800x400?text=Crime+statistics+for+${location.name}`} 
                                 alt={`Crime statistics comparison for ${location.name}`}
                                 className="w-full h-full object-cover"
                               />
@@ -593,7 +593,7 @@ const LocationDetail = () => {
                               <div className="bg-white rounded border border-neutral-100 overflow-hidden">
                                 <div className="h-40 bg-neutral-200">
                                   <img 
-                                    src={`https://source.unsplash.com/featured/400x300?cultural,museum,arts,${location.name}&sig=cultural${location.name}`} 
+                                    src={`https://placehold.co/400x300?text=Cultural+district+in+${location.name}`} 
                                     alt={`Cultural district in ${location.name}`}
                                     className="w-full h-full object-cover"
                                   />
@@ -606,7 +606,7 @@ const LocationDetail = () => {
                               <div className="bg-white rounded border border-neutral-100 overflow-hidden">
                                 <div className="h-40 bg-neutral-200">
                                   <img 
-                                    src={`https://source.unsplash.com/featured/400x300?parks,outdoor,recreation,${location.name}&sig=recreation${location.name}`} 
+                                    src={`https://placehold.co/400x300?text=Outdoor+recreation+in+${location.name}`} 
                                     alt={`Outdoor recreation in ${location.name}`}
                                     className="w-full h-full object-cover"
                                   />
@@ -732,7 +732,7 @@ const LocationDetail = () => {
                           
                           <div className="h-64 bg-neutral-50 rounded overflow-hidden">
                             <img 
-                              src={`https://source.unsplash.com/featured/800x400?transit,map,transportation,${location.name}&sig=transit${location.name}`} 
+                              src={`https://placehold.co/800x400?text=Transit+map+for+${location.name}`} 
                               alt={`Transit map for ${location.name}`}
                               className="w-full h-full object-cover"
                             />

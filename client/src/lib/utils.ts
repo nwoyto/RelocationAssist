@@ -16,9 +16,12 @@ export function getLocationImageUrl(locationName: string, state: string, size: '
   // Format the location name for use in URL (lowercase, hyphenated)
   const formattedName = locationName.toLowerCase().replace(/\s+/g, '-');
   
-  // Create a predictable URL pattern for location images
-  // In production, these would be stored in a CDN or S3 bucket with a consistent naming pattern
-  return `https://source.unsplash.com/featured/800x600?${formattedName},${state},city,urban`;
+  // Use placeholder service that is more reliable
+  const width = size === 'small' ? 400 : size === 'medium' ? 800 : 1200;
+  const height = size === 'small' ? 300 : size === 'medium' ? 600 : 900;
+  
+  // Use a reliable placeholder service
+  return `https://placehold.co/${width}x${height}?text=${formattedName},+${state}`;
 }
 
 /**
@@ -32,8 +35,8 @@ export function getNeighborhoodImageUrl(locationName: string, neighborhoodName: 
   const formattedLocation = locationName.toLowerCase().replace(/\s+/g, '-');
   const formattedNeighborhood = neighborhoodName.toLowerCase().replace(/\s+/g, '-');
   
-  // Create a predictable URL pattern for neighborhood images
-  return `https://source.unsplash.com/featured/400x300?${formattedNeighborhood},${formattedLocation},neighborhood`;
+  // Use a reliable placeholder service
+  return `https://placehold.co/400x300?text=${formattedNeighborhood}+in+${formattedLocation}`;
 }
 
 /**
@@ -46,7 +49,7 @@ export function getListingImageUrl(address: string, index: number = 0): string {
   // Format the address for use in URL (lowercase, hyphenated)
   const formattedAddress = address.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]/g, '');
   
-  // Create a predictable URL pattern for listing images
+  // Use a reliable placeholder service
   // Adding the index allows for different images even with the same address
-  return `https://source.unsplash.com/featured/600x400?house,home,property&sig=${formattedAddress}${index}`;
+  return `https://placehold.co/600x400?text=Property+at+${formattedAddress}+${index}`;
 }
