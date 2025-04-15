@@ -39,7 +39,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "User ID is required" });
       }
       
-      const savedLocations = await storage.getSavedLocations(userId);
+      const savedLocations = await storage.getSavedLocations(parseInt(userId));
       res.json(savedLocations);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch saved locations" });
@@ -54,7 +54,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "User ID and Location ID are required" });
       }
       
-      const savedLocation = await storage.saveLocation(userId, locationId);
+      const savedLocation = await storage.saveLocation(parseInt(userId), parseInt(locationId));
       res.status(201).json(savedLocation);
     } catch (error) {
       res.status(500).json({ error: "Failed to save location" });
