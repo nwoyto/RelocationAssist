@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
+import cbpLogo from "../assets/cbp-logo.svg";
 
 const Header = () => {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
@@ -13,7 +14,7 @@ const Header = () => {
             <Link href="/">
               <div className="flex items-center cursor-pointer">
                 <img 
-                  src="https://upload.wikimedia.org/wikipedia/commons/8/8b/US-CustomsBorderProtection-Seal.svg" 
+                  src={cbpLogo} 
                   alt="CBP Logo" 
                   className="h-10 w-10 mr-3"
                 />

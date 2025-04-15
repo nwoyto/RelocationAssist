@@ -1,3 +1,5 @@
+import cbpLogo from "../assets/cbp-logo.svg";
+
 const Footer = () => {
   return (
     <footer className="bg-neutral-800 text-white py-6">
