@@ -5,6 +5,9 @@ import { useLocations } from "@/hooks/useLocations";
 import { useQuery } from "@tanstack/react-query";
 import StarRating from "@/components/StarRating";
 import ExternalDataDisplay from "@/components/ExternalDataDisplay";
+import RentcastPropertyListings from "@/components/RentcastPropertyListings";
+import RentcastMarketTrends from "@/components/RentcastMarketTrends";
+import RentcastPriceHistory from "@/components/RentcastPriceHistory";
 import { Location } from "@/lib/types";
 import { getLocationImageUrl, getNeighborhoodImageUrl, getListingImageUrl } from "@/lib/utils";
 
