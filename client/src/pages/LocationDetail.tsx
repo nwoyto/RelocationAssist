@@ -267,13 +267,22 @@ const LocationDetail = () => {
                           
                           <div className="mb-6">
                             <h4 className="font-medium mb-3">Housing Market Trends</h4>
-                            <div className="h-64 bg-neutral-50 rounded overflow-hidden">
-                              <img 
-                                src={`https://placehold.co/800x400?text=Housing+market+trends+for+${location.name}`} 
-                                alt={`Housing market price trends for ${location.name}`}
-                                className="w-full h-full object-cover"
+                            
+                            {/* Rentcast Market Trends Component */}
+                            <RentcastMarketTrends
+                              city={location.name}
+                              state={location.state}
+                            />
+                            
+                            {/* Rentcast Price History Component */}
+                            <div className="mt-6">
+                              <RentcastPriceHistory
+                                city={location.name}
+                                state={location.state}
+                                months={12}
                               />
                             </div>
+                            
                             <div className="mt-2 text-sm text-neutral-500">
                               Home values have increased {location.housingData.priceGrowthLastYear}% over the past year
                             </div>
@@ -326,29 +335,12 @@ const LocationDetail = () => {
                           )}
                         
                           <div className="bg-neutral-50 p-4 rounded mb-6">
-                            <h4 className="font-medium mb-3">Recent Listings</h4>
-                            
-                            <div className="space-y-4">
-                              {location.housingData.recentListings.map((listing: { price: number; bedrooms: number; bathrooms: number; sqft: number; address: string; isNew: boolean }, index: number) => (
-                                <div key={index} className="bg-white rounded shadow-sm overflow-hidden">
-                                  <div className="h-32 bg-neutral-200 relative">
-                                    <img 
-                                      src={getListingImageUrl(listing.address, index)} 
-                                      alt={`${listing.bedrooms} bed, ${listing.bathrooms} bath home`}
-                                      className="w-full h-full object-cover"
-                                    />
-                                    <div className="absolute top-2 left-2 bg-[#005ea2] text-white text-xs py-1 px-2 rounded">
-                                      {listing.isNew ? 'New' : ''}
-                                    </div>
-                                  </div>
-                                  <div className="p-3">
-                                    <div className="font-medium">${listing.price.toLocaleString()}</div>
-                                    <div className="text-sm">{listing.bedrooms} bd | {listing.bathrooms} ba | {listing.sqft.toLocaleString()} sqft</div>
-                                    <div className="text-sm text-neutral-500 truncate">{listing.address}</div>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
+                            {/* Rentcast Property Listings Component */}
+                            <RentcastPropertyListings
+                              city={location.name}
+                              state={location.state}
+                              limit={3}
+                            />
                             
                             <div className="text-center mt-4">
                               <a href="#" className="text-[#005ea2] font-medium text-sm hover:underline">View all listings</a>

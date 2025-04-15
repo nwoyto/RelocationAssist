@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiRequest } from '@lib/queryClient';
-import { Card } from '@components/ui/card';
-import { Progress } from '@components/ui/progress';
-import { Skeleton } from '@components/ui/skeleton';
+import { apiRequest } from '@/lib/queryClient';
+import { Card } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { Skeleton } from '@/components/ui/skeleton';
 import { 
   BarChart, 
   Bar, 
