@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<svg width="200" height="200" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
   <circle cx="50" cy="50" r="45" fill="#1a4480"/>
   <circle cx="50" cy="50" r="40" fill="#fff"/>
   <circle cx="50" cy="50" r="35" fill="#1a4480"/>
   <g fill="#fff" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold">
-    <text x="50" y="40" font-size="16">U.S.</text>
-    <text x="50" y="58" font-size="12">CBP</text>
-    <text x="50" y="75" font-size="8">EST. 2003</text>
+    <text x="50" y="40" font-size="20">U.S.</text>
+    <text x="50" y="60" font-size="18">CBP</text>
+    <text x="50" y="78" font-size="10">EST. 2003</text>
   </g>
 </svg>

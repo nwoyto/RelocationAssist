@@ -16,7 +16,7 @@ const Header = () => {
                 <img 
                   src={cbpLogo} 
                   alt="CBP Logo" 
-                  className="h-10 w-10 mr-3"
+                  className="h-14 w-14 mr-3"
                 />
                 <div>
                   <h1 className="font-['Public_Sans'] font-bold text-xl md:text-2xl leading-tight">CBP Relocation Resources</h1>
