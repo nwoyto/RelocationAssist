@@ -61,23 +61,32 @@ const CompareView = () => {
     <div className="p-4 md:p-6">
       <div className="max-w-6xl mx-auto">
         {/* Compare Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 bg-[#1a4480]/5 p-4 rounded-lg">
           <div>
-            <h2 className="font-['Public_Sans'] text-2xl font-bold mb-1">Compare Locations</h2>
-            <p className="text-neutral-500">
-              Comparing {locationArray.length} location{locationArray.length > 1 ? 's' : ''}
+            <h2 className="font-['Public_Sans'] text-2xl font-bold mb-1 text-[#1a4480]">
+              <span className="material-icons align-middle mr-2 text-[#1a4480]">compare_arrows</span>
+              Compare Locations
+            </h2>
+            <p className="text-neutral-600">
+              Comparing <span className="font-semibold">{locationArray.length}</span> location{locationArray.length > 1 ? 's' : ''} side by side
             </p>
           </div>
-          <button 
-            onClick={() => {
-              clearCompare();
-              navigate('/');
-            }} 
-            className="flex items-center text-neutral-500 hover:text-neutral-700"
-          >
-            <span className="material-icons mr-1">close</span>
-            <span>Close Comparison</span>
-          </button>
+          <div className="mt-4 sm:mt-0 flex items-center">
+            <Link href="/" className="mr-3 flex items-center text-[#005ea2] hover:text-[#00477b] font-medium">
+              <span className="material-icons mr-1">add</span>
+              <span>Add Location</span>
+            </Link>
+            <button 
+              onClick={() => {
+                clearCompare();
+                navigate('/');
+              }} 
+              className="flex items-center bg-white py-2 px-4 border border-neutral-200 rounded-md hover:bg-neutral-50 transition-colors"
+            >
+              <span className="material-icons mr-1 text-neutral-500">close</span>
+              <span>Close Comparison</span>
+            </button>
+          </div>
         </div>
         
         {/* Compare Table */}
@@ -85,20 +94,24 @@ const CompareView = () => {
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-neutral-200">
               <thead>
-                <tr className="bg-neutral-50">
-                  <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider sticky left-0 bg-neutral-50 min-w-[200px]">
+                <tr className="bg-[#1a4480] text-white">
+                  <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider sticky left-0 bg-[#1a4480] min-w-[200px] border-r border-[#ffffff33]">
                     Category
                   </th>
                   {locations.map(location => (
-                    <th key={location.id} className="px-6 py-4 text-left text-sm font-medium min-w-[250px]">
+                    <th key={location.id} className="px-6 py-4 text-left text-sm font-medium min-w-[250px] border-r border-[#ffffff33] last:border-r-0">
                       <div className="flex justify-between items-center">
                         <div>
-                          <div>{location.name}, {location.state}</div>
-                          <div className="text-xs text-neutral-500">{location.region}</div>
+                          <div className="font-bold">{location.name}, {location.state}</div>
+                          <div className="text-xs text-white/80 flex items-center mt-1">
+                            <span className="inline-block w-2 h-2 rounded-full bg-white mr-1.5"></span>
+                            {location.region}
+                          </div>
                         </div>
                         <button 
                           onClick={() => removeFromCompare(location.id)} 
-                          className="text-neutral-400 hover:text-[#d83933] p-1 ml-2"
+                          className="text-white/70 hover:text-white hover:bg-[#ffffff22] p-1.5 rounded-full transition-colors ml-2"
+                          title="Remove from comparison"
                         >
                           <span className="material-icons text-sm">close</span>
                         </button>
@@ -124,9 +137,12 @@ const CompareView = () => {
                 </tr>
                 
                 {/* Housing */}
-                <tr className="bg-neutral-50 font-medium">
-                  <td colSpan={locationArray.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-neutral-50">
-                    Housing
+                <tr className="bg-[#005ea2]/10 font-medium">
+                  <td colSpan={locationArray.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-[#005ea2]/10">
+                    <div className="flex items-center text-[#1a4480]">
+                      <span className="material-icons text-sm mr-2">home</span>
+                      Housing
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -134,7 +150,10 @@ const CompareView = () => {
                   {locations.map(location => (
                     <td key={location.id} className="px-6 py-3 text-sm">
                       <div className="font-medium">${location.housingData.medianHomePrice.toLocaleString()}</div>
-                      <div className={`text-xs ${location.housingData.priceDiffFromAvg < 0 ? 'text-[#2e8540]' : 'text-[#d83933]'}`}>
+                      <div className={`text-xs flex items-center mt-1 ${location.housingData.priceDiffFromAvg < 0 ? 'text-[#2e8540]' : 'text-[#d83933]'}`}>
+                        <span className="material-icons text-sm mr-1">
+                          {location.housingData.priceDiffFromAvg < 0 ? 'trending_down' : 'trending_up'}
+                        </span>
                         {Math.abs(location.housingData.priceDiffFromAvg)}% {location.housingData.priceDiffFromAvg < 0 ? 'below' : 'above'} avg
                       </div>
                     </td>
@@ -145,7 +164,10 @@ const CompareView = () => {
                   {locations.map(location => (
                     <td key={location.id} className="px-6 py-3 text-sm">
                       <div className="font-medium">${location.housingData.medianRent}/mo</div>
-                      <div className={`text-xs ${location.housingData.rentDiffFromAvg < 0 ? 'text-[#2e8540]' : 'text-[#d83933]'}`}>
+                      <div className={`text-xs flex items-center mt-1 ${location.housingData.rentDiffFromAvg < 0 ? 'text-[#2e8540]' : 'text-[#d83933]'}`}>
+                        <span className="material-icons text-sm mr-1">
+                          {location.housingData.rentDiffFromAvg < 0 ? 'trending_down' : 'trending_up'}
+                        </span>
                         {Math.abs(location.housingData.rentDiffFromAvg)}% {location.housingData.rentDiffFromAvg < 0 ? 'below' : 'above'} avg
                       </div>
                     </td>
@@ -153,9 +175,12 @@ const CompareView = () => {
                 </tr>
                 
                 {/* Schools */}
-                <tr className="bg-neutral-50 font-medium">
-                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-neutral-50">
-                    Education
+                <tr className="bg-[#005ea2]/10 font-medium">
+                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-[#005ea2]/10">
+                    <div className="flex items-center text-[#1a4480]">
+                      <span className="material-icons text-sm mr-2">school</span>
+                      Education
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -176,23 +201,40 @@ const CompareView = () => {
                 </tr>
                 
                 {/* Safety */}
-                <tr className="bg-neutral-50 font-medium">
-                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-neutral-50">
-                    Safety
+                <tr className="bg-[#005ea2]/10 font-medium">
+                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-[#005ea2]/10">
+                    <div className="flex items-center text-[#1a4480]">
+                      <span className="material-icons text-sm mr-2">shield</span>
+                      Safety
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td className="px-6 py-3 text-sm sticky left-0 bg-white">Crime Index</td>
                   {locations.map(location => (
                     <td key={location.id} className="px-6 py-3 text-sm">
-                      <div className="font-medium">{location.safetyData.crimeIndex}</div>
-                      <div className={`text-xs ${
+                      <div className="font-medium flex items-center">
+                        {location.safetyData.crimeIndex}
+                        <span className={`ml-2 inline-flex items-center justify-center rounded-full w-5 h-5 text-xs ${
+                          location.safetyData.crimeIndexDiff < -50 
+                            ? 'bg-[#2e8540]/10 text-[#2e8540]' 
+                            : location.safetyData.crimeIndexDiff < -20 
+                            ? 'bg-[#ffbe2e]/10 text-[#ffbe2e]' 
+                            : 'bg-[#d83933]/10 text-[#d83933]'
+                        }`}>
+                          {location.safetyData.crimeIndexDiff < -50 ? 'A' : location.safetyData.crimeIndexDiff < -20 ? 'B' : 'C'}
+                        </span>
+                      </div>
+                      <div className={`text-xs flex items-center mt-1 ${
                         location.safetyData.crimeIndexDiff < -50 
                           ? 'text-[#2e8540]' 
                           : location.safetyData.crimeIndexDiff < -20 
                           ? 'text-[#ffbe2e]' 
                           : 'text-[#d83933]'
                       }`}>
+                        <span className="material-icons text-sm mr-1">
+                          {location.safetyData.crimeIndexDiff < 0 ? 'trending_down' : 'trending_up'}
+                        </span>
                         {Math.abs(location.safetyData.crimeIndexDiff)}% below avg
                       </div>
                     </td>
@@ -200,23 +242,40 @@ const CompareView = () => {
                 </tr>
                 
                 {/* Lifestyle */}
-                <tr className="bg-neutral-50 font-medium">
-                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-neutral-50">
-                    Lifestyle
+                <tr className="bg-[#005ea2]/10 font-medium">
+                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-[#005ea2]/10">
+                    <div className="flex items-center text-[#1a4480]">
+                      <span className="material-icons text-sm mr-2">local_cafe</span>
+                      Lifestyle
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td className="px-6 py-3 text-sm sticky left-0 bg-white">Cost of Living</td>
                   {locations.map(location => (
                     <td key={location.id} className="px-6 py-3 text-sm">
-                      <div className="font-medium">{location.costOfLiving}</div>
-                      <div className={`text-xs ${
+                      <div className="font-medium flex items-center">
+                        {location.costOfLiving}
+                        <span className={`ml-2 inline-flex items-center justify-center rounded-full w-5 h-5 text-xs ${
+                          location.costOfLiving < 95 
+                            ? 'bg-[#2e8540]/10 text-[#2e8540]' 
+                            : location.costOfLiving > 105 
+                            ? 'bg-[#d83933]/10 text-[#d83933]' 
+                            : 'bg-[#ffbe2e]/10 text-[#ffbe2e]'
+                        }`}>
+                          {location.costOfLiving < 95 ? 'A' : location.costOfLiving > 105 ? 'C' : 'B'}
+                        </span>
+                      </div>
+                      <div className={`text-xs flex items-center mt-1 ${
                         location.costOfLiving < 95 
                           ? 'text-[#2e8540]' 
                           : location.costOfLiving > 105 
                           ? 'text-[#d83933]' 
                           : 'text-[#ffbe2e]'
                       }`}>
+                        <span className="material-icons text-sm mr-1">
+                          {location.costOfLiving < 100 ? 'trending_down' : 'trending_up'}
+                        </span>
                         {Math.abs(100 - location.costOfLiving)}% {location.costOfLiving < 100 ? 'below' : 'above'} avg
                       </div>
                     </td>
@@ -232,9 +291,12 @@ const CompareView = () => {
                 </tr>
                 
                 {/* CBP Specific */}
-                <tr className="bg-neutral-50 font-medium">
-                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-neutral-50">
-                    CBP Information
+                <tr className="bg-[#005ea2]/10 font-medium">
+                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-[#005ea2]/10">
+                    <div className="flex items-center text-[#1a4480]">
+                      <span className="material-icons text-sm mr-2">business</span>
+                      CBP Information
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -266,48 +328,63 @@ const CompareView = () => {
         
         {/* External Data Section */}
         {locationArray.some(loc => loc.externalData) && (
-          <div className="mt-8">
-            <div className="flex items-center space-x-2 mb-4">
-              <Database className="h-4 w-4 text-[#005ea2]" />
-              <h3 className="text-lg font-bold">Authentic Data from data.gov</h3>
+          <div className="mt-10">
+            <div className="flex items-center bg-[#1a4480]/5 p-4 rounded-lg mb-6 border-l-4 border-l-[#1a4480]">
+              <Database className="h-5 w-5 text-[#1a4480] mr-3" />
+              <div>
+                <h3 className="text-lg font-bold text-[#1a4480]">Authentic Data from data.gov</h3>
+                <p className="text-sm text-neutral-600">
+                  Verified official information sourced directly from U.S. Government data services
+                </p>
+              </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {locationArray.map(location => (
-                <div key={`data-${location.id}`} className="space-y-4">
-                  <div className="border-b pb-2">
-                    <Badge variant="outline" className="mb-1">{location.name}, {location.state}</Badge>
-                    <h4 className="text-md font-medium">Official Data Sources</h4>
+                <div key={`data-${location.id}`} className="space-y-4 border border-neutral-200 rounded-lg overflow-hidden shadow-sm">
+                  <div className="bg-[#1a4480] text-white p-3">
+                    <Badge variant="outline" className="mb-1 border-white text-white">{location.name}, {location.state}</Badge>
+                    <h4 className="text-md font-medium flex items-center">
+                      <span className="material-icons text-sm mr-2">verified</span>
+                      Official Data Sources
+                    </h4>
                   </div>
                   
-                  {location.externalData ? (
-                    <>
-                      <ExternalDataDisplay 
-                        externalData={location.externalData}
-                        dataType="housing"
-                        title="Housing Data"
-                        description="Official housing statistics from data.gov"
-                      />
-                      
-                      <ExternalDataDisplay 
-                        externalData={location.externalData}
-                        dataType="education"
-                        title="Education Data"
-                        description="Official education statistics from data.gov"
-                      />
-                      
-                      <ExternalDataDisplay 
-                        externalData={location.externalData}
-                        dataType="safety"
-                        title="Safety Data"
-                        description="Official crime statistics from data.gov"
-                      />
-                    </>
-                  ) : (
-                    <div className="p-4 bg-gray-50 rounded-md text-center text-sm text-gray-500">
-                      No official data available for this location
-                    </div>
-                  )}
+                  <div className="p-3">
+                    {location.externalData ? (
+                      <>
+                        <ExternalDataDisplay 
+                          externalData={location.externalData}
+                          dataType="housing"
+                          title="Housing Data"
+                          description="Official housing statistics from data.gov"
+                        />
+                        
+                        <div className="my-4"></div>
+                        
+                        <ExternalDataDisplay 
+                          externalData={location.externalData}
+                          dataType="education"
+                          title="Education Data"
+                          description="Official education statistics from data.gov"
+                        />
+                        
+                        <div className="my-4"></div>
+                        
+                        <ExternalDataDisplay 
+                          externalData={location.externalData}
+                          dataType="safety"
+                          title="Safety Data"
+                          description="Official crime statistics from data.gov"
+                        />
+                      </>
+                    ) : (
+                      <div className="p-4 bg-neutral-50 rounded-md text-center text-sm text-neutral-500">
+                        <span className="material-icons text-neutral-400 mb-2 text-xl">info_outline</span>
+                        <p>No official data available for this location</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -315,15 +392,21 @@ const CompareView = () => {
         )}
 
         {/* Action Buttons */}
-        <div className="mt-6 flex justify-end space-x-4">
-          <button className="py-2 px-4 border border-neutral-200 hover:border-neutral-300 rounded transition-colors">
-            <span className="material-icons text-sm mr-1 align-text-bottom">file_download</span>
-            Export Comparison
-          </button>
-          <button className="py-2 px-4 bg-[#005ea2] hover:bg-[#00477b] text-white rounded transition-colors">
-            <span className="material-icons text-sm mr-1 align-text-bottom">share</span>
-            Share Comparison
-          </button>
+        <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 bg-[#f0f8ff] p-4 rounded-lg border border-[#005ea2]/20">
+          <div>
+            <h3 className="text-[#1a4480] font-medium mb-1">Save your comparison</h3>
+            <p className="text-sm text-neutral-600">Export or share your comparison with colleagues</p>
+          </div>
+          <div className="flex gap-3">
+            <button className="py-2.5 px-5 border border-[#005ea2]/30 hover:border-[#005ea2]/60 bg-white rounded-md transition-colors flex items-center shadow-sm hover:shadow">
+              <span className="material-icons text-sm mr-2 text-[#1a4480]">file_download</span>
+              <span className="font-medium">Export PDF</span>
+            </button>
+            <button className="py-2.5 px-5 bg-[#005ea2] hover:bg-[#00477b] text-white rounded-md transition-colors flex items-center shadow-sm hover:shadow">
+              <span className="material-icons text-sm mr-2">share</span>
+              <span className="font-medium">Share Link</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
