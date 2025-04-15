@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import Sidebar from "@/components/Sidebar";
 import { useLocations } from "@/hooks/useLocations";
 import StarRating from "@/components/StarRating";
+import LocationMap from "@/components/LocationMap";
+import "@/components/LocationMap.css";
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
@@ -189,18 +191,28 @@ const Dashboard = () => {
               <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
                 <div className="p-4 border-b border-neutral-100 flex justify-between items-center">
                   <h3 className="font-['Public_Sans'] font-semibold">CBP Port Locations</h3>
-                  <a href="#" className="text-[#005ea2] text-sm font-medium hover:underline">View Full Map</a>
+                  <Link href="/map">
+                    <a className="text-[#005ea2] text-sm font-medium hover:underline">View Full Map</a>
+                  </Link>
                 </div>
-                <div className="h-64 lg:h-96 relative bg-neutral-200 bg-[url('https://images.unsplash.com/photo-1508848863462-0c1ce30c2f1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')] bg-cover bg-center">
-                  {/* Map placeholder */}
-                  <div className="absolute inset-0 bg-neutral-800/20 flex items-center justify-center">
+                <div className="h-64 lg:h-96 relative">
+                  <div className="absolute inset-0">
+                    <LocationMap 
+                      locations={locations} 
+                      height="100%"
+                      interactive={false}
+                    />
+                  </div>
+                  <div className="absolute inset-0 bg-neutral-800/10 flex items-center justify-center">
                     <div className="bg-white/90 p-4 rounded-lg shadow-lg max-w-md text-center">
                       <h4 className="font-medium mb-2">Interactive Location Map</h4>
                       <p className="text-sm text-neutral-600 mb-3">Explore CBP port locations and surrounding communities across the United States</p>
-                      <button className="bg-[#005ea2] hover:bg-[#00477b] text-white py-2 px-4 rounded font-medium transition-colors">
-                        <span className="material-icons text-sm align-text-bottom mr-1">map</span>
-                        Open Interactive Map
-                      </button>
+                      <Link href="/map">
+                        <a className="bg-[#005ea2] hover:bg-[#00477b] text-white py-2 px-4 rounded font-medium transition-colors inline-flex items-center">
+                          <span className="material-icons text-sm align-text-bottom mr-1">map</span>
+                          Open Interactive Map
+                        </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
