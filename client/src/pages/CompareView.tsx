@@ -61,56 +61,58 @@ const CompareView = () => {
     <div className="p-4 md:p-6">
       <div className="max-w-6xl mx-auto">
         {/* Compare Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 bg-[#1a4480]/5 p-4 rounded-lg">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 bg-[#f8fafc] p-4 border-l-4 border-l-[#0ea5e9]" style={{ borderRadius: '2px' }}>
           <div>
-            <h2 className="font-['Public_Sans'] text-2xl font-bold mb-1 text-[#1a4480]">
-              <span className="material-icons align-middle mr-2 text-[#1a4480]">compare_arrows</span>
+            <h2 className="text-2xl font-bold mb-1 text-[#0f172a] flex items-center">
+              <span className="material-icons mr-2 text-[#0284c7]">compare_arrows</span>
               Compare Locations
             </h2>
-            <p className="text-neutral-600">
-              Comparing <span className="font-semibold">{locationArray.length}</span> location{locationArray.length > 1 ? 's' : ''} side by side
+            <p className="text-[#64748b]">
+              Comparing <span className="font-semibold text-[#334155]">{locationArray.length}</span> location{locationArray.length > 1 ? 's' : ''} side by side
             </p>
           </div>
           <div className="mt-4 sm:mt-0 flex items-center">
-            <Link href="/" className="mr-3 flex items-center text-[#005ea2] hover:text-[#00477b] font-medium">
-              <span className="material-icons mr-1">add</span>
-              <span>Add Location</span>
+            <Link href="/" className="mr-3 flex items-center text-[#0284c7] hover:text-[#0369a1] font-medium">
+              <span className="material-icons mr-1 text-sm">add</span>
+              <span>ADD LOCATION</span>
             </Link>
             <button 
               onClick={() => {
                 clearCompare();
                 navigate('/');
               }} 
-              className="flex items-center bg-white py-2 px-4 border border-neutral-200 rounded-md hover:bg-neutral-50 transition-colors"
+              className="flex items-center bg-white py-2 px-4 border border-[#e2e8f0] hover:bg-[#f1f5f9] transition-colors"
+              style={{ borderRadius: '2px' }}
             >
-              <span className="material-icons mr-1 text-neutral-500">close</span>
-              <span>Close Comparison</span>
+              <span className="material-icons mr-1 text-sm text-[#64748b]">close</span>
+              <span className="text-[#334155] font-medium">CLOSE</span>
             </button>
           </div>
         </div>
         
         {/* Compare Table */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="bg-white border border-[#e2e8f0] overflow-hidden" style={{ borderRadius: '2px' }}>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-neutral-200">
+            <table className="min-w-full divide-y divide-[#e2e8f0]">
               <thead>
-                <tr className="bg-[#1a4480] text-white">
-                  <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider sticky left-0 bg-[#1a4480] min-w-[200px] border-r border-[#ffffff33]">
-                    Category
+                <tr className="bg-[#0284c7] text-white">
+                  <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider sticky left-0 bg-[#0284c7] min-w-[200px] border-r border-[#0ea5e9]" style={{ letterSpacing: '1px' }}>
+                    CATEGORY
                   </th>
                   {locations.map(location => (
-                    <th key={location.id} className="px-6 py-4 text-left text-sm font-medium min-w-[250px] border-r border-[#ffffff33] last:border-r-0">
+                    <th key={location.id} className="px-6 py-4 text-left text-sm font-medium min-w-[250px] border-r border-[#0ea5e9] last:border-r-0">
                       <div className="flex justify-between items-center">
                         <div>
-                          <div className="font-bold">{location.name}, {location.state}</div>
-                          <div className="text-xs text-white/80 flex items-center mt-1">
-                            <span className="inline-block w-2 h-2 rounded-full bg-white mr-1.5"></span>
+                          <div className="font-bold tracking-tight">{location.name}, {location.state}</div>
+                          <div className="text-xs text-white/90 flex items-center mt-1">
+                            <span className="inline-block w-2 h-2 bg-white mr-1.5" style={{ borderRadius: '0px' }}></span>
                             {location.region}
                           </div>
                         </div>
                         <button 
                           onClick={() => removeFromCompare(location.id)} 
-                          className="text-white/70 hover:text-white hover:bg-[#ffffff22] p-1.5 rounded-full transition-colors ml-2"
+                          className="text-white/80 hover:text-white hover:bg-[#0ea5e9] p-1 transition-colors ml-2"
+                          style={{ borderRadius: '2px' }}
                           title="Remove from comparison"
                         >
                           <span className="material-icons text-sm">close</span>
@@ -137,9 +139,9 @@ const CompareView = () => {
                 </tr>
                 
                 {/* Housing */}
-                <tr className="bg-[#005ea2]/10 font-medium">
-                  <td colSpan={locationArray.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-[#005ea2]/10">
-                    <div className="flex items-center text-[#1a4480]">
+                <tr className="bg-[#f0f9ff] font-medium border-l-4 border-l-[#0ea5e9]">
+                  <td colSpan={locationArray.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-[#f0f9ff]">
+                    <div className="flex items-center text-[#0284c7] uppercase tracking-wide text-xs font-bold">
                       <span className="material-icons text-sm mr-2">home</span>
                       Housing
                     </div>
@@ -175,9 +177,9 @@ const CompareView = () => {
                 </tr>
                 
                 {/* Schools */}
-                <tr className="bg-[#005ea2]/10 font-medium">
-                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-[#005ea2]/10">
-                    <div className="flex items-center text-[#1a4480]">
+                <tr className="bg-[#f0f9ff] font-medium border-l-4 border-l-[#0ea5e9]">
+                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-[#f0f9ff]">
+                    <div className="flex items-center text-[#0284c7] uppercase tracking-wide text-xs font-bold">
                       <span className="material-icons text-sm mr-2">school</span>
                       Education
                     </div>
@@ -201,9 +203,9 @@ const CompareView = () => {
                 </tr>
                 
                 {/* Safety */}
-                <tr className="bg-[#005ea2]/10 font-medium">
-                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-[#005ea2]/10">
-                    <div className="flex items-center text-[#1a4480]">
+                <tr className="bg-[#f0f9ff] font-medium border-l-4 border-l-[#0ea5e9]">
+                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-[#f0f9ff]">
+                    <div className="flex items-center text-[#0284c7] uppercase tracking-wide text-xs font-bold">
                       <span className="material-icons text-sm mr-2">shield</span>
                       Safety
                     </div>
