@@ -110,9 +110,15 @@ const LocationDetail = () => {
                   <div className="sm:flex">
                     {/* Map Preview */}
                     <div 
-                      className="w-full sm:w-1/3 lg:w-2/5 bg-neutral-200 bg-[url('https://images.unsplash.com/photo-1508848863462-0c1ce30c2f1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')] bg-cover bg-center sm:h-auto" 
+                      className="w-full sm:w-1/3 lg:w-2/5 bg-neutral-200 sm:h-auto" 
                       style={{ minHeight: '220px' }}
-                    ></div>
+                    >
+                      <img 
+                        src={getLocationImageUrl(location.name, location.state, 'large')}
+                        alt={`${location.name}, ${location.state}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                     
                     {/* Overview Info */}
                     <div className="p-4 sm:p-6 w-full sm:w-2/3 lg:w-3/5">
@@ -258,12 +264,12 @@ const LocationDetail = () => {
                           
                           <div className="mb-6">
                             <h4 className="font-medium mb-3">Housing Market Trends</h4>
-                            <div className="h-64 bg-neutral-50 rounded flex items-center justify-center text-neutral-400">
-                              {/* Chart placeholder */}
-                              <div className="text-center">
-                                <span className="material-icons text-3xl mb-2">insert_chart</span>
-                                <p>Housing price chart visualization</p>
-                              </div>
+                            <div className="h-64 bg-neutral-50 rounded overflow-hidden">
+                              <img 
+                                src={`https://source.unsplash.com/featured/800x400?housing,chart,market,graph&sig=${location.name}`} 
+                                alt="Housing market price trends for ${location.name}"
+                                className="w-full h-full object-cover"
+                              />
                             </div>
                             <div className="mt-2 text-sm text-neutral-500">
                               Home values have increased {location.housingData.priceGrowthLastYear}% over the past year
@@ -508,12 +514,12 @@ const LocationDetail = () => {
                           
                           <div className="mb-6">
                             <h4 className="font-medium mb-3">Safety Comparison</h4>
-                            <div className="h-64 bg-neutral-50 rounded flex items-center justify-center text-neutral-400">
-                              {/* Chart placeholder */}
-                              <div className="text-center">
-                                <span className="material-icons text-3xl mb-2">insert_chart</span>
-                                <p>Crime comparison chart visualization</p>
-                              </div>
+                            <div className="h-64 bg-neutral-50 rounded overflow-hidden">
+                              <img 
+                                src={`https://source.unsplash.com/featured/800x400?crime,safety,chart,stats&sig=${location.name}`} 
+                                alt="Crime statistics comparison for ${location.name}"
+                                className="w-full h-full object-cover"
+                              />
                             </div>
                           </div>
                         </div>
@@ -585,7 +591,13 @@ const LocationDetail = () => {
                             <h4 className="font-medium mb-3">Local Attractions</h4>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                               <div className="bg-white rounded border border-neutral-100 overflow-hidden">
-                                <div className="h-40 bg-neutral-200"></div>
+                                <div className="h-40 bg-neutral-200">
+                                  <img 
+                                    src={`https://source.unsplash.com/featured/400x300?cultural,museum,arts,${location.name}&sig=cultural${location.name}`} 
+                                    alt="Cultural district in ${location.name}"
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
                                 <div className="p-3">
                                   <div className="font-medium">Cultural District</div>
                                   <div className="text-sm text-neutral-500">Museums, galleries, and theaters</div>
