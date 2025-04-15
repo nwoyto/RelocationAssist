@@ -244,9 +244,9 @@ const CompareView = () => {
                 </tr>
                 
                 {/* Lifestyle */}
-                <tr className="bg-[#005ea2]/10 font-medium">
-                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-[#005ea2]/10">
-                    <div className="flex items-center text-[#1a4480]">
+                <tr className="bg-[#f0f9ff] font-medium border-l-4 border-l-[#0ea5e9]">
+                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-[#f0f9ff]">
+                    <div className="flex items-center text-[#0284c7] uppercase tracking-wide text-xs font-bold">
                       <span className="material-icons text-sm mr-2">local_cafe</span>
                       Lifestyle
                     </div>
@@ -293,9 +293,9 @@ const CompareView = () => {
                 </tr>
                 
                 {/* CBP Specific */}
-                <tr className="bg-[#005ea2]/10 font-medium">
-                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-[#005ea2]/10">
-                    <div className="flex items-center text-[#1a4480]">
+                <tr className="bg-[#f0f9ff] font-medium border-l-4 border-l-[#0ea5e9]">
+                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-[#f0f9ff]">
+                    <div className="flex items-center text-[#0284c7] uppercase tracking-wide text-xs font-bold">
                       <span className="material-icons text-sm mr-2">business</span>
                       CBP Information
                     </div>
@@ -331,11 +331,15 @@ const CompareView = () => {
         {/* External Data Section */}
         {locationArray.some(loc => loc.externalData) && (
           <div className="mt-10">
-            <div className="flex items-center bg-[#1a4480]/5 p-4 rounded-lg mb-6 border-l-4 border-l-[#1a4480]">
-              <Database className="h-5 w-5 text-[#1a4480] mr-3" />
+            <div className="flex items-center bg-[#f0f9ff] p-4 mb-6 border-l-4 border-l-[#0ea5e9]" style={{ borderRadius: '2px' }}>
+              <Database className="h-5 w-5 text-[#0284c7] mr-3" />
               <div>
-                <h3 className="text-lg font-bold text-[#1a4480]">Authentic Data from data.gov</h3>
-                <p className="text-sm text-neutral-600">
+                <h3 className="text-lg font-bold text-[#0f172a] flex items-center">
+                  <span className="text-[#0284c7] tracking-wide uppercase text-sm">data.gov</span>
+                  <span className="mx-2 text-xs text-[#64748b]">|</span>
+                  <span>Authentic Data</span>
+                </h3>
+                <p className="text-sm text-[#64748b]">
                   Verified official information sourced directly from U.S. Government data services
                 </p>
               </div>
@@ -343,16 +347,16 @@ const CompareView = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {locationArray.map(location => (
-                <div key={`data-${location.id}`} className="space-y-4 border border-neutral-200 rounded-lg overflow-hidden shadow-sm">
-                  <div className="bg-[#1a4480] text-white p-3">
-                    <Badge variant="outline" className="mb-1 border-white text-white">{location.name}, {location.state}</Badge>
+                <div key={`data-${location.id}`} className="border border-[#e2e8f0] overflow-hidden shadow-sm" style={{ borderRadius: '2px' }}>
+                  <div className="bg-[#0284c7] text-white p-3">
+                    <Badge variant="outline" className="mb-1 border-white text-white uppercase tracking-wide text-xs">{location.name}, {location.state}</Badge>
                     <h4 className="text-md font-medium flex items-center">
                       <span className="material-icons text-sm mr-2">verified</span>
                       Official Data Sources
                     </h4>
                   </div>
                   
-                  <div className="p-3">
+                  <div className="p-4">
                     {location.externalData ? (
                       <>
                         <ExternalDataDisplay 
@@ -362,7 +366,7 @@ const CompareView = () => {
                           description="Official housing statistics from data.gov"
                         />
                         
-                        <div className="my-4"></div>
+                        <div className="my-4 border-t border-[#e2e8f0]"></div>
                         
                         <ExternalDataDisplay 
                           externalData={location.externalData}
@@ -371,7 +375,7 @@ const CompareView = () => {
                           description="Official education statistics from data.gov"
                         />
                         
-                        <div className="my-4"></div>
+                        <div className="my-4 border-t border-[#e2e8f0]"></div>
                         
                         <ExternalDataDisplay 
                           externalData={location.externalData}
@@ -381,8 +385,8 @@ const CompareView = () => {
                         />
                       </>
                     ) : (
-                      <div className="p-4 bg-neutral-50 rounded-md text-center text-sm text-neutral-500">
-                        <span className="material-icons text-neutral-400 mb-2 text-xl">info_outline</span>
+                      <div className="p-4 bg-[#f8fafc] text-center text-sm text-[#64748b]">
+                        <span className="material-icons text-[#94a3b8] mb-2 text-xl">info_outline</span>
                         <p>No official data available for this location</p>
                       </div>
                     )}
@@ -394,19 +398,28 @@ const CompareView = () => {
         )}
 
         {/* Action Buttons */}
-        <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 bg-[#f0f8ff] p-4 rounded-lg border border-[#005ea2]/20">
+        <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 bg-[#f8fafc] p-4 border border-[#e2e8f0]" style={{ borderRadius: '2px' }}>
           <div>
-            <h3 className="text-[#1a4480] font-medium mb-1">Save your comparison</h3>
-            <p className="text-sm text-neutral-600">Export or share your comparison with colleagues</p>
+            <h3 className="text-[#0f172a] font-semibold mb-1 flex items-center">
+              <span className="material-icons text-sm mr-2 text-[#0284c7]">save</span>
+              SAVE COMPARISON
+            </h3>
+            <p className="text-sm text-[#64748b]">Export or share your comparison with colleagues</p>
           </div>
-          <div className="flex gap-3">
-            <button className="py-2.5 px-5 border border-[#005ea2]/30 hover:border-[#005ea2]/60 bg-white rounded-md transition-colors flex items-center shadow-sm hover:shadow">
-              <span className="material-icons text-sm mr-2 text-[#1a4480]">file_download</span>
-              <span className="font-medium">Export PDF</span>
+          <div className="flex gap-3 mt-3 sm:mt-0">
+            <button 
+              className="py-2.5 px-5 border border-[#e2e8f0] hover:border-[#0ea5e9] bg-white transition-colors flex items-center shadow-sm hover:shadow"
+              style={{ borderRadius: '2px' }}
+            >
+              <span className="material-icons text-sm mr-2 text-[#0284c7]">file_download</span>
+              <span className="font-medium uppercase text-[#334155] text-sm tracking-wide">Export</span>
             </button>
-            <button className="py-2.5 px-5 bg-[#005ea2] hover:bg-[#00477b] text-white rounded-md transition-colors flex items-center shadow-sm hover:shadow">
+            <button 
+              className="py-2.5 px-5 bg-[#0284c7] hover:bg-[#0369a1] text-white transition-colors flex items-center shadow-sm hover:shadow"
+              style={{ borderRadius: '2px' }}
+            >
               <span className="material-icons text-sm mr-2">share</span>
-              <span className="font-medium">Share Link</span>
+              <span className="font-medium uppercase text-sm tracking-wide">Share</span>
             </button>
           </div>
         </div>
