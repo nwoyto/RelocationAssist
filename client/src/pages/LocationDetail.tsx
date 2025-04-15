@@ -604,7 +604,13 @@ const LocationDetail = () => {
                                 </div>
                               </div>
                               <div className="bg-white rounded border border-neutral-100 overflow-hidden">
-                                <div className="h-40 bg-neutral-200"></div>
+                                <div className="h-40 bg-neutral-200">
+                                  <img 
+                                    src={`https://source.unsplash.com/featured/400x300?parks,outdoor,recreation,${location.name}&sig=recreation${location.name}`} 
+                                    alt="Outdoor recreation in ${location.name}"
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
                                 <div className="p-3">
                                   <div className="font-medium">Outdoor Recreation</div>
                                   <div className="text-sm text-neutral-500">Parks, trails, and sports facilities</div>
@@ -724,12 +730,12 @@ const LocationDetail = () => {
                             </div>
                           </div>
                           
-                          <div className="h-64 bg-neutral-50 rounded flex items-center justify-center text-neutral-400">
-                            {/* Map placeholder */}
-                            <div className="text-center">
-                              <span className="material-icons text-3xl mb-2">map</span>
-                              <p>Transit map visualization</p>
-                            </div>
+                          <div className="h-64 bg-neutral-50 rounded overflow-hidden">
+                            <img 
+                              src={`https://source.unsplash.com/featured/800x400?transit,map,transportation,${location.name}&sig=transit${location.name}`} 
+                              alt="Transit map for ${location.name}"
+                              className="w-full h-full object-cover"
+                            />
                           </div>
                         </div>
                         
