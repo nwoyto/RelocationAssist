@@ -1,6 +1,44 @@
+# Dependencies
 node_modules
 dist
-.DS_Store
+package-lock.json
+
+# Production build files
+dist
+build
 server/public
+
+# Environment variables and secrets
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.replit
+.env.*.local
+
+# Debug files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Config files
 vite.config.ts.*
 *.tar.gz
+
+# Logs
+logs
+*.log
