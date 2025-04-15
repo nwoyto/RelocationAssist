@@ -107,6 +107,11 @@ const RentcastMarketTrends = ({ city, state }: RentcastMarketTrendsProps) => {
       <Card className="p-6 border-red-200 bg-red-50">
         <h3 className="text-lg font-medium text-red-800">Unable to load market trends</h3>
         <p className="text-sm mt-1 text-red-600">We're having trouble connecting to our real estate data service. Please try again later.</p>
+        <div className="mt-4 text-xs text-red-500">
+          <p>Our real estate data service is currently experiencing technical difficulties. 
+          This may be due to API endpoint changes or service availability issues.</p>
+          <p className="mt-1">We're working to restore real-time market data as soon as possible.</p>
+        </div>
       </Card>
     );
   }
@@ -116,6 +121,20 @@ const RentcastMarketTrends = ({ city, state }: RentcastMarketTrendsProps) => {
       <Card className="p-6 border-blue-200 bg-blue-50">
         <h3 className="text-lg font-medium text-blue-800">No market data available</h3>
         <p className="text-sm mt-1 text-blue-600">We don't have market trend data for {city}, {state} at this time. Please check back later.</p>
+        <div className="flex flex-col md:flex-row gap-4 mt-4">
+          <div className="bg-white rounded p-4 flex-1">
+            <p className="text-sm font-medium text-blue-800">Alternative Data Sources</p>
+            <ul className="text-xs text-blue-600 mt-2 space-y-1">
+              <li>• Census Bureau Housing Data</li>
+              <li>• HUD Market Reports</li>
+              <li>• Local MLS Listings</li>
+            </ul>
+          </div>
+          <div className="bg-white rounded p-4 flex-1">
+            <p className="text-sm font-medium text-blue-800">Coming Soon</p>
+            <p className="text-xs text-blue-600 mt-2">We're expanding our data sources to provide comprehensive real estate market information. Check back for updates.</p>
+          </div>
+        </div>
       </Card>
     );
   }

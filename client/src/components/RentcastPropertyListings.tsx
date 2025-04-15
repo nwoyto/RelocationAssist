@@ -93,28 +93,39 @@ const RentcastPropertyListings = ({ city, state, limit = 5 }: RentcastPropertyLi
     );
   }
 
+  // Parse and process the data cautiously
+  const safeData = Array.isArray(data) ? data : [];
+  
+  // Safety check for required properties
+  const processedData = safeData.filter(property => 
+    property && 
+    typeof property === 'object' && 
+    property.id && 
+    property.address
+  );
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-semibold">Current Listings</h3>
         <Badge variant="outline" className="px-3 py-1">
-          {data.length} properties
+          {processedData.length} properties
         </Badge>
       </div>
       
       <div className="grid gap-4">
-        {data.map((property) => (
+        {processedData.map((property) => (
           <Card key={property.id} className="overflow-hidden shadow-md hover:shadow-lg transition-shadow">
             <div className="flex flex-col md:flex-row">
               <div className="md:w-1/3 h-48 relative">
-                {property.photos && property.photos.length > 0 ? (
+                {property.photos && Array.isArray(property.photos) && property.photos.length > 0 ? (
                   <img 
                     src={property.photos[0]} 
-                    alt={`${property.address}`} 
+                    alt={`${property.address || 'Property'}`} 
                     className="object-cover w-full h-full"
                     onError={(e) => {
                       // Fallback image on error
-                      e.currentTarget.src = `https://via.placeholder.com/400x300?text=Property+at+${encodeURIComponent(property.address)}`;
+                      e.currentTarget.src = `https://via.placeholder.com/400x300?text=Property`;
                     }}
                   />
                 ) : (
@@ -124,7 +135,7 @@ const RentcastPropertyListings = ({ city, state, limit = 5 }: RentcastPropertyLi
                 )}
                 <div className="absolute top-2 left-2">
                   <Badge className="bg-blue-600">
-                    {property.propertyType}
+                    {property.propertyType || 'Property'}
                   </Badge>
                 </div>
               </div>
@@ -132,30 +143,48 @@ const RentcastPropertyListings = ({ city, state, limit = 5 }: RentcastPropertyLi
               <div className="flex-1 p-4">
                 <div className="flex justify-between">
                   <h3 className="text-lg font-semibold truncate">{property.address}</h3>
-                  <p className="text-lg font-bold text-blue-700">{formatPrice(property.price)}</p>
+                  <p className="text-lg font-bold text-blue-700">
+                    {typeof property.price === 'number' ? formatPrice(property.price) : 'Contact for price'}
+                  </p>
                 </div>
                 
-                <p className="text-gray-600 text-sm mb-2">{property.city}, {property.state} {property.zipCode}</p>
+                <p className="text-gray-600 text-sm mb-2">
+                  {[
+                    property.city,
+                    property.state,
+                    property.zipCode
+                  ].filter(Boolean).join(', ')}
+                </p>
                 
                 <div className="flex gap-3 mb-2">
-                  <div className="flex gap-1 items-center">
-                    <span className="material-icons text-sm text-gray-600">bed</span>
-                    <span>{property.bedrooms} beds</span>
-                  </div>
-                  <div className="flex gap-1 items-center">
-                    <span className="material-icons text-sm text-gray-600">bathtub</span>
-                    <span>{property.bathrooms} baths</span>
-                  </div>
-                  <div className="flex gap-1 items-center">
-                    <span className="material-icons text-sm text-gray-600">square_foot</span>
-                    <span>{property.squareFootage.toLocaleString()} sqft</span>
-                  </div>
+                  {typeof property.bedrooms === 'number' && (
+                    <div className="flex gap-1 items-center">
+                      <span className="material-icons text-sm text-gray-600">bed</span>
+                      <span>{property.bedrooms} beds</span>
+                    </div>
+                  )}
+                  
+                  {typeof property.bathrooms === 'number' && (
+                    <div className="flex gap-1 items-center">
+                      <span className="material-icons text-sm text-gray-600">bathtub</span>
+                      <span>{property.bathrooms} baths</span>
+                    </div>
+                  )}
+                  
+                  {typeof property.squareFootage === 'number' && (
+                    <div className="flex gap-1 items-center">
+                      <span className="material-icons text-sm text-gray-600">square_foot</span>
+                      <span>{property.squareFootage.toLocaleString()} sqft</span>
+                    </div>
+                  )}
                 </div>
                 
-                <div className="flex items-center mt-1 text-sm text-gray-600">
-                  <span className="material-icons text-xs mr-1">calendar_today</span>
-                  Listed {formatDate(property.listedDate)}
-                </div>
+                {property.listedDate && (
+                  <div className="flex items-center mt-1 text-sm text-gray-600">
+                    <span className="material-icons text-xs mr-1">calendar_today</span>
+                    Listed {formatDate(property.listedDate)}
+                  </div>
+                )}
                 
                 <div className="mt-3">
                   <Button variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50 hover:text-blue-800">

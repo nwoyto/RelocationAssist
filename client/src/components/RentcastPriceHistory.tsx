@@ -60,17 +60,25 @@ const RentcastPriceHistory = ({ city, state, months = 12 }: RentcastPriceHistory
 
   // Calculate overall trend
   const calculateTrend = () => {
-    if (!data || data.length < 2) return { value: 0, neutral: true };
+    if (!data || !Array.isArray(data) || data.length < 2) return { value: 0, neutral: true };
     
-    const firstPrice = data[0].price;
-    const lastPrice = data[data.length - 1].price;
-    const percentChange = ((lastPrice - firstPrice) / firstPrice) * 100;
-    
-    return {
-      value: percentChange,
-      neutral: Math.abs(percentChange) < 1,
-      positive: percentChange >= 0
-    };
+    try {
+      const firstPrice = typeof data[0].price === 'number' ? data[0].price : 0;
+      const lastPrice = typeof data[data.length - 1].price === 'number' ? data[data.length - 1].price : 0;
+      
+      if (firstPrice === 0) return { value: 0, neutral: true };
+      
+      const percentChange = ((lastPrice - firstPrice) / firstPrice) * 100;
+      
+      return {
+        value: percentChange,
+        neutral: Math.abs(percentChange) < 1,
+        positive: percentChange >= 0
+      };
+    } catch (error) {
+      console.error("Error calculating trend:", error);
+      return { value: 0, neutral: true };
+    }
   };
 
   const trend = calculateTrend();
@@ -92,11 +100,50 @@ const RentcastPriceHistory = ({ city, state, months = 12 }: RentcastPriceHistory
       <Card className="p-6 border-red-200 bg-red-50">
         <h3 className="text-lg font-medium text-red-800">Unable to load rental price history</h3>
         <p className="text-sm mt-1 text-red-600">We're having trouble connecting to our real estate data service. Please try again later.</p>
+        <div className="mt-4 text-xs text-red-500">
+          <p>Our rental price history data service is temporarily unavailable. 
+          This may be due to API endpoint changes or service availability issues.</p>
+          <p className="mt-1">We apologize for the inconvenience and are working to restore this feature.</p>
+        </div>
       </Card>
     );
   }
 
-  if (!data || data.length === 0) {
+  if (!data) {
+    return (
+      <Card className="p-6 border-blue-200 bg-blue-50">
+        <h3 className="text-lg font-medium text-blue-800">No price history available</h3>
+        <p className="text-sm mt-1 text-blue-600">We don't have rental price history data for {city}, {state} at this time. Please check back later.</p>
+        
+        <div className="bg-white rounded p-4 mt-4">
+          <h4 className="text-sm font-medium text-blue-800 mb-2">About Rental Price History</h4>
+          <p className="text-xs text-blue-600">When available, this feature shows rental price trends over time based on authentic data from multiple listing services and the Rentcast API.</p>
+          
+          <div className="mt-4">
+            <h5 className="text-xs font-medium text-blue-800">Alternative sources:</h5>
+            <ul className="text-xs text-blue-600 mt-1 space-y-1">
+              <li>• Department of Housing and Urban Development (HUD)</li>
+              <li>• Census Bureau Housing Data</li>
+              <li>• Local real estate association reports</li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+    );
+  }
+
+  // Verify we have properly structured data array
+  if (!Array.isArray(data)) {
+    return (
+      <Card className="p-6 border-blue-200 bg-blue-50">
+        <h3 className="text-lg font-medium text-blue-800">Invalid rental price history data</h3>
+        <p className="text-sm mt-1 text-blue-600">We received an unexpected data format for {city}, {state}. Our team has been notified.</p>
+      </Card>
+    );
+  }
+
+  // Make sure we have enough data points
+  if (data.length === 0) {
     return (
       <Card className="p-6 border-blue-200 bg-blue-50">
         <h3 className="text-lg font-medium text-blue-800">No price history available</h3>
@@ -104,6 +151,21 @@ const RentcastPriceHistory = ({ city, state, months = 12 }: RentcastPriceHistory
       </Card>
     );
   }
+
+  // Ensure data is properly formatted for the chart
+  const chartData = data.map(point => {
+    if (!point || typeof point !== 'object') {
+      return { date: new Date().toISOString(), price: 0, change: 0 };
+    }
+    return {
+      ...point,
+      formattedDate: typeof point.date === 'string' ? formatDate(point.date) : '',
+      price: typeof point.price === 'number' ? point.price : 0,
+      change: typeof point.change === 'number' ? point.change : 0
+    };
+  });
+
+  const latestPrice = chartData.length > 0 ? chartData[chartData.length - 1].price : 0;
 
   return (
     <Card className="p-6">
@@ -153,17 +215,14 @@ const RentcastPriceHistory = ({ city, state, months = 12 }: RentcastPriceHistory
         <div className="text-right">
           <p className="text-sm text-gray-500">Current median rent</p>
           <p className="text-lg font-bold">
-            {data.length > 0 ? formatCurrency(data[data.length - 1].price) : 'N/A'}
+            {latestPrice > 0 ? formatCurrency(latestPrice) : 'N/A'}
           </p>
         </div>
       </div>
       
       <ResponsiveContainer width="100%" height={300}>
         <LineChart
-          data={data.map(point => ({
-            ...point,
-            formattedDate: formatDate(point.date)
-          }))}
+          data={chartData}
           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
