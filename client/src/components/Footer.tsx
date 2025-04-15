@@ -8,7 +8,7 @@ const Footer = () => {
           <div className="mb-6 md:mb-0">
             <div className="flex items-center">
               <img 
-                src="https://upload.wikimedia.org/wikipedia/commons/8/8b/US-CustomsBorderProtection-Seal.svg" 
+                src={cbpLogo} 
                 alt="CBP Logo" 
                 className="h-10 w-10 mr-3"
               />
