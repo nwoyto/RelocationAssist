@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { enrichLocationData } from "./services/dataService";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // API Routes for locations
@@ -24,7 +25,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Location not found" });
       }
       
-      res.json(location);
+      // Get additional authentic data from data.gov
+      try {
+        const enrichedLocation = await enrichLocationData(location);
+        res.json(enrichedLocation);
+      } catch (enrichError) {
+        console.error("Error enriching location data:", enrichError);
+        // Still return the base location data even if enrichment fails
+        res.json(location);
+      }
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch location" });
     }
@@ -82,7 +91,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const ids = locationIds.split(',').map(id => parseInt(id));
       const locations = await storage.getLocationsByIds(ids);
-      res.json(locations);
+      
+      // Enrich locations with additional data from data.gov
+      try {
+        const enrichedLocationsPromises = locations.map(location => enrichLocationData(location));
+        const enrichedLocations = await Promise.all(enrichedLocationsPromises);
+        res.json(enrichedLocations);
+      } catch (enrichError) {
+        console.error("Error enriching locations data for comparison:", enrichError);
+        // Still return the base locations data even if enrichment fails
+        res.json(locations);
+      }
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch locations for comparison" });
     }
