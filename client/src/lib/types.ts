@@ -1,3 +1,16 @@
+export interface ExternalDataSource {
+  source: string;
+  fetched: string;
+  data: any;
+}
+
+export interface ExternalData {
+  housing: ExternalDataSource | null;
+  education: ExternalDataSource | null;
+  safety: ExternalDataSource | null;
+  lastUpdated: string;
+}
+
 export interface Location {
   id: number;
   name: string;
@@ -18,6 +31,9 @@ export interface Location {
   safetyData: SafetyData;
   lifestyleData: LifestyleData;
   transportationData: TransportationData;
+  externalData?: ExternalData;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface HousingData {

@@ -6,12 +6,13 @@ import StarRating from "@/components/StarRating";
 import ExternalDataDisplay from "@/components/ExternalDataDisplay";
 import { Database } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Location } from "@/lib/types";
 
 const CompareView = () => {
   const { compareLocations, removeFromCompare, clearCompare } = useLocations();
   const [, navigate] = useLocation();
   
-  const { data: locations, isLoading, error } = useQuery({
+  const { data: locations, isLoading, error } = useQuery<Location[]>({
     queryKey: [`/api/compare?ids=${compareLocations.join(',')}`],
     enabled: compareLocations.length > 0,
   });
@@ -22,11 +23,9 @@ const CompareView = () => {
         <span className="material-icons text-5xl mb-4 text-neutral-400">compare_arrows</span>
         <h2 className="font-['Public_Sans'] text-2xl font-bold mb-2">No Locations to Compare</h2>
         <p className="mb-6 text-neutral-600">Add locations to your comparison list to see them side by side</p>
-        <Link href="/">
-          <a className="bg-[#005ea2] hover:bg-[#00477b] text-white py-2 px-6 rounded-md font-medium transition-colors inline-flex items-center">
-            <span className="material-icons text-sm mr-2">search</span>
-            Browse Locations
-          </a>
+        <Link href="/" className="bg-[#005ea2] hover:bg-[#00477b] text-white py-2 px-6 rounded-md font-medium transition-colors inline-flex items-center">
+          <span className="material-icons text-sm mr-2">search</span>
+          Browse Locations
         </Link>
       </div>
     );
@@ -40,7 +39,7 @@ const CompareView = () => {
     );
   }
 
-  if (error || !locations) {
+  if (error || !locations || !Array.isArray(locations)) {
     return (
       <div className="p-6 text-center">
         <h3 className="text-lg font-medium mb-2">Error loading comparison data</h3>
@@ -54,6 +53,9 @@ const CompareView = () => {
       </div>
     );
   }
+  
+  // At this point, locations is confirmed to be an array of Location objects
+  const locationArray: Location[] = locations;
 
   return (
     <div className="p-4 md:p-6">
@@ -63,7 +65,7 @@ const CompareView = () => {
           <div>
             <h2 className="font-['Public_Sans'] text-2xl font-bold mb-1">Compare Locations</h2>
             <p className="text-neutral-500">
-              Comparing {locations.length} location{locations.length > 1 ? 's' : ''}
+              Comparing {locationArray.length} location{locationArray.length > 1 ? 's' : ''}
             </p>
           </div>
           <button 
@@ -123,7 +125,7 @@ const CompareView = () => {
                 
                 {/* Housing */}
                 <tr className="bg-neutral-50 font-medium">
-                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-neutral-50">
+                  <td colSpan={locationArray.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-neutral-50">
                     Housing
                   </td>
                 </tr>
@@ -263,7 +265,7 @@ const CompareView = () => {
         </div>
         
         {/* External Data Section */}
-        {locations.some(loc => loc.externalData) && (
+        {locationArray.some(loc => loc.externalData) && (
           <div className="mt-8">
             <div className="flex items-center space-x-2 mb-4">
               <Database className="h-4 w-4 text-[#005ea2]" />
