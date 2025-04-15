@@ -5,6 +5,7 @@ import { useLocations } from "@/hooks/useLocations";
 import { useQuery } from "@tanstack/react-query";
 import StarRating from "@/components/StarRating";
 import ExternalDataDisplay from "@/components/ExternalDataDisplay";
+import { Location } from "@/lib/types";
 
 const LocationDetail = () => {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
@@ -21,7 +22,7 @@ const LocationDetail = () => {
   
   const id = params?.id ? parseInt(params.id) : 0;
   
-  const { data: location, isLoading, error } = useQuery({
+  const { data: location, isLoading, error } = useQuery<Location>({
     queryKey: [`/api/locations/${id}`],
     enabled: !!id,
   });
@@ -285,7 +286,7 @@ const LocationDetail = () => {
                                   </tr>
                                 </thead>
                                 <tbody className="divide-y divide-neutral-100">
-                                  {location.housingData.neighborhoods.map((neighborhood, index) => (
+                                  {location.housingData.neighborhoods.map((neighborhood: { name: string; medianPrice: number; homeTypes: string; rating: number }, index: number) => (
                                     <tr key={index}>
                                       <td className="px-4 py-3 whitespace-nowrap">{neighborhood.name}</td>
                                       <td className="px-4 py-3 whitespace-nowrap">${neighborhood.medianPrice.toLocaleString()}</td>
@@ -302,11 +303,23 @@ const LocationDetail = () => {
                         </div>
                         
                         <div className="w-full lg:w-1/3">
+                          {/* Official External Data Section */}
+                          {location.externalData && (
+                            <div className="mb-6">
+                              <ExternalDataDisplay
+                                externalData={location.externalData}
+                                dataType="housing"
+                                title="Official Housing Data"
+                                description="Data from Census Bureau Housing Survey"
+                              />
+                            </div>
+                          )}
+                        
                           <div className="bg-neutral-50 p-4 rounded mb-6">
                             <h4 className="font-medium mb-3">Recent Listings</h4>
                             
                             <div className="space-y-4">
-                              {location.housingData.recentListings.map((listing, index) => (
+                              {location.housingData.recentListings.map((listing: { price: number; bedrooms: number; bathrooms: number; sqft: number; address: string; isNew: boolean }, index: number) => (
                                 <div key={index} className="bg-white rounded shadow-sm overflow-hidden">
                                   <div className="h-32 bg-neutral-200 relative">
                                     <div className="absolute top-2 left-2 bg-[#005ea2] text-white text-xs py-1 px-2 rounded">
@@ -375,36 +388,381 @@ const LocationDetail = () => {
                       </div>
                     )}
                     
-                    {/* Placeholder for other tabs */}
+                    {/* Schools Tab */}
                     {activeTab === 'schools' && (
-                      <div className="text-center py-6 text-neutral-500">
-                        <span className="material-icons text-4xl mb-2">school</span>
-                        <p>School information would be displayed here</p>
-                        <p className="text-sm mt-1">Including ratings, districts, and enrollment data</p>
+                      <div className="flex flex-col lg:flex-row gap-6">
+                        <div className="w-full lg:w-2/3">
+                          <h3 className="font-['Public_Sans'] text-lg font-semibold mb-4">School Information</h3>
+                          <div className="bg-neutral-50 p-4 rounded mb-6">
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <div className="text-neutral-500 text-sm mb-1">Overall Rating</div>
+                                <div className="flex items-center">
+                                  <StarRating rating={location.schoolData.rating} />
+                                </div>
+                              </div>
+                              <div>
+                                <div className="text-neutral-500 text-sm mb-1">School Count</div>
+                                <div className="font-medium">{location.schoolData.publicSchools} public, {location.schoolData.privateSchools} private</div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <div className="flex justify-between items-center mb-3">
+                              <h4 className="font-medium">Top Schools</h4>
+                            </div>
+                            <div className="space-y-3">
+                              {location.schoolData.topSchools.map((school: { name: string; type: string; grades: string; rating: number }, index: number) => (
+                                <div key={index} className="bg-white p-3 rounded border border-neutral-100">
+                                  <div className="flex justify-between items-start">
+                                    <div>
+                                      <div className="font-medium">{school.name}</div>
+                                      <div className="text-sm text-neutral-500">{school.type} • {school.grades}</div>
+                                    </div>
+                                    <StarRating rating={school.rating} />
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="w-full lg:w-1/3">
+                          {/* Official External Data Section */}
+                          {location.externalData && (
+                            <div className="mb-6">
+                              <ExternalDataDisplay
+                                externalData={location.externalData}
+                                dataType="education"
+                                title="Official Education Data"
+                                description="Data from Department of Education"
+                              />
+                            </div>
+                          )}
+                          
+                          <div className="bg-neutral-50 p-4 rounded">
+                            <h4 className="font-medium mb-3">Education Resources</h4>
+                            <div className="space-y-3">
+                              <a href="#" className="flex items-start p-3 bg-white rounded border border-neutral-100 hover:border-[#005ea2] hover:shadow-sm transition-all">
+                                <span className="material-icons text-[#005ea2] mr-3">description</span>
+                                <div>
+                                  <div className="font-medium">School District Map</div>
+                                  <p className="text-sm text-neutral-500">View boundaries for all school districts</p>
+                                </div>
+                              </a>
+                              <a href="#" className="flex items-start p-3 bg-white rounded border border-neutral-100 hover:border-[#005ea2] hover:shadow-sm transition-all">
+                                <span className="material-icons text-[#005ea2] mr-3">calendar_today</span>
+                                <div>
+                                  <div className="font-medium">School Calendar</div>
+                                  <p className="text-sm text-neutral-500">Important dates for the school year</p>
+                                </div>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     )}
                     
+                    {/* Safety Tab */}
                     {activeTab === 'safety' && (
-                      <div className="text-center py-6 text-neutral-500">
-                        <span className="material-icons text-4xl mb-2">shield</span>
-                        <p>Safety and crime statistics would be displayed here</p>
-                        <p className="text-sm mt-1">Including crime rates compared to national averages</p>
+                      <div className="flex flex-col lg:flex-row gap-6">
+                        <div className="w-full lg:w-2/3">
+                          <h3 className="font-['Public_Sans'] text-lg font-semibold mb-4">Safety Overview</h3>
+                          
+                          <div className="bg-neutral-50 p-4 rounded mb-6">
+                            <div className="flex items-center justify-between mb-3">
+                              <div>
+                                <div className="text-neutral-500 text-sm mb-1">Crime Index</div>
+                                <div className="font-semibold text-lg">
+                                  {location.safetyData.crimeIndex} 
+                                  <span className="text-sm font-normal ml-1 text-neutral-500">(US avg: 100)</span>
+                                </div>
+                              </div>
+                              <div className={`text-sm font-medium px-3 py-1 rounded-full 
+                                ${location.safetyData.crimeIndexDiff <= -10 ? 'bg-green-100 text-green-800' : 
+                                  location.safetyData.crimeIndexDiff >= 10 ? 'bg-red-100 text-red-800' : 
+                                  'bg-yellow-100 text-yellow-800'}`}>
+                                {Math.abs(location.safetyData.crimeIndexDiff)}% 
+                                {location.safetyData.crimeIndexDiff < 0 ? ' below avg' : ' above avg'}
+                              </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-4 mt-4">
+                              <div>
+                                <div className="text-neutral-500 text-sm mb-1">Violent Crime</div>
+                                <div className="font-medium">{location.safetyData.violentCrime} <span className="text-xs text-neutral-500">per 100k</span></div>
+                              </div>
+                              <div>
+                                <div className="text-neutral-500 text-sm mb-1">Property Crime</div>
+                                <div className="font-medium">{location.safetyData.propertyCrime} <span className="text-xs text-neutral-500">per 100k</span></div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="mb-6">
+                            <h4 className="font-medium mb-3">Safety Comparison</h4>
+                            <div className="h-64 bg-neutral-50 rounded flex items-center justify-center text-neutral-400">
+                              {/* Chart placeholder */}
+                              <div className="text-center">
+                                <span className="material-icons text-3xl mb-2">insert_chart</span>
+                                <p>Crime comparison chart visualization</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="w-full lg:w-1/3">
+                          {/* Official External Data Section */}
+                          {location.externalData && (
+                            <div className="mb-6">
+                              <ExternalDataDisplay
+                                externalData={location.externalData}
+                                dataType="safety"
+                                title="Official Crime Data"
+                                description="Data from FBI Uniform Crime Report"
+                              />
+                            </div>
+                          )}
+                          
+                          <div className="bg-neutral-50 p-4 rounded">
+                            <h4 className="font-medium mb-3">Safety Resources</h4>
+                            <div className="space-y-3">
+                              <a href="#" className="flex items-start p-3 bg-white rounded border border-neutral-100 hover:border-[#005ea2] hover:shadow-sm transition-all">
+                                <span className="material-icons text-[#005ea2] mr-3">map</span>
+                                <div>
+                                  <div className="font-medium">Crime Map</div>
+                                  <p className="text-sm text-neutral-500">View crime incidents by neighborhood</p>
+                                </div>
+                              </a>
+                              <a href="#" className="flex items-start p-3 bg-white rounded border border-neutral-100 hover:border-[#005ea2] hover:shadow-sm transition-all">
+                                <span className="material-icons text-[#005ea2] mr-3">local_police</span>
+                                <div>
+                                  <div className="font-medium">Police Stations</div>
+                                  <p className="text-sm text-neutral-500">Locate nearby police and fire stations</p>
+                                </div>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     )}
                     
+                    {/* Lifestyle Tab */}
                     {activeTab === 'lifestyle' && (
-                      <div className="text-center py-6 text-neutral-500">
-                        <span className="material-icons text-4xl mb-2">local_activity</span>
-                        <p>Lifestyle information would be displayed here</p>
-                        <p className="text-sm mt-1">Including dining, shopping, and recreation options</p>
+                      <div className="flex flex-col lg:flex-row gap-6">
+                        <div className="w-full lg:w-2/3">
+                          <h3 className="font-['Public_Sans'] text-lg font-semibold mb-4">Lifestyle & Recreation</h3>
+                          
+                          <div className="bg-neutral-50 p-4 rounded mb-6">
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <div className="text-neutral-500 text-sm mb-1">Restaurants</div>
+                                <div className="font-medium">{location.lifestyleData.restaurants} within 5 miles</div>
+                              </div>
+                              <div>
+                                <div className="text-neutral-500 text-sm mb-1">Parks</div>
+                                <div className="font-medium">{location.lifestyleData.parks} within 5 miles</div>
+                              </div>
+                              <div>
+                                <div className="text-neutral-500 text-sm mb-1">Shopping</div>
+                                <div className="font-medium">{location.lifestyleData.shopping} retail centers</div>
+                              </div>
+                              <div>
+                                <div className="text-neutral-500 text-sm mb-1">Entertainment</div>
+                                <div className="font-medium">{location.lifestyleData.entertainment} venues</div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="mb-6">
+                            <h4 className="font-medium mb-3">Local Attractions</h4>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                              <div className="bg-white rounded border border-neutral-100 overflow-hidden">
+                                <div className="h-40 bg-neutral-200"></div>
+                                <div className="p-3">
+                                  <div className="font-medium">Cultural District</div>
+                                  <div className="text-sm text-neutral-500">Museums, galleries, and theaters</div>
+                                </div>
+                              </div>
+                              <div className="bg-white rounded border border-neutral-100 overflow-hidden">
+                                <div className="h-40 bg-neutral-200"></div>
+                                <div className="p-3">
+                                  <div className="font-medium">Outdoor Recreation</div>
+                                  <div className="text-sm text-neutral-500">Parks, trails, and sports facilities</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="w-full lg:w-1/3">
+                          <div className="bg-neutral-50 p-4 rounded mb-6">
+                            <h4 className="font-medium mb-3">Community Events</h4>
+                            <div className="space-y-3">
+                              <div className="bg-white p-3 rounded border border-neutral-100">
+                                <div className="text-sm text-[#005ea2] font-medium mb-1">APR 15</div>
+                                <div className="font-medium">Farmers Market</div>
+                                <div className="text-sm text-neutral-500">Downtown Plaza, 9AM - 1PM</div>
+                              </div>
+                              <div className="bg-white p-3 rounded border border-neutral-100">
+                                <div className="text-sm text-[#005ea2] font-medium mb-1">APR 22</div>
+                                <div className="font-medium">Arts Festival</div>
+                                <div className="text-sm text-neutral-500">City Park, All Weekend</div>
+                              </div>
+                              <div className="bg-white p-3 rounded border border-neutral-100">
+                                <div className="text-sm text-[#005ea2] font-medium mb-1">MAY 5</div>
+                                <div className="font-medium">Community Cleanup</div>
+                                <div className="text-sm text-neutral-500">Various Locations, 10AM</div>
+                              </div>
+                            </div>
+                            <div className="text-center mt-4">
+                              <a href="#" className="text-[#005ea2] font-medium text-sm hover:underline">View all events</a>
+                            </div>
+                          </div>
+                          
+                          <div className="bg-neutral-50 p-4 rounded">
+                            <h4 className="font-medium mb-3">Local Resources</h4>
+                            <div className="space-y-3">
+                              <a href="#" className="flex items-start p-3 bg-white rounded border border-neutral-100 hover:border-[#005ea2] hover:shadow-sm transition-all">
+                                <span className="material-icons text-[#005ea2] mr-3">explore</span>
+                                <div>
+                                  <div className="font-medium">City Visitor Guide</div>
+                                  <p className="text-sm text-neutral-500">Discover local attractions and activities</p>
+                                </div>
+                              </a>
+                              <a href="#" className="flex items-start p-3 bg-white rounded border border-neutral-100 hover:border-[#005ea2] hover:shadow-sm transition-all">
+                                <span className="material-icons text-[#005ea2] mr-3">local_activity</span>
+                                <div>
+                                  <div className="font-medium">Recreation Programs</div>
+                                  <p className="text-sm text-neutral-500">Classes, sports leagues, and activities</p>
+                                </div>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     )}
                     
+                    {/* Transportation Tab */}
                     {activeTab === 'transportation' && (
-                      <div className="text-center py-6 text-neutral-500">
-                        <span className="material-icons text-4xl mb-2">commute</span>
-                        <p>Transportation information would be displayed here</p>
-                        <p className="text-sm mt-1">Including commute times and public transit options</p>
+                      <div className="flex flex-col lg:flex-row gap-6">
+                        <div className="w-full lg:w-2/3">
+                          <h3 className="font-['Public_Sans'] text-lg font-semibold mb-4">Transportation Overview</h3>
+                          
+                          <div className="bg-neutral-50 p-4 rounded mb-6">
+                            <div className="grid grid-cols-3 gap-4">
+                              <div>
+                                <div className="text-neutral-500 text-sm mb-1">Transit Score</div>
+                                <div className="font-medium">{location.transportationData.transitScore}/100</div>
+                              </div>
+                              <div>
+                                <div className="text-neutral-500 text-sm mb-1">Walk Score</div>
+                                <div className="font-medium">{location.transportationData.walkScore}/100</div>
+                              </div>
+                              <div>
+                                <div className="text-neutral-500 text-sm mb-1">Bike Score</div>
+                                <div className="font-medium">{location.transportationData.bikeScore}/100</div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="bg-white p-4 rounded border border-neutral-100 mb-6">
+                            <h4 className="font-medium mb-3">Transit Options</h4>
+                            <div className="space-y-3">
+                              <div className="flex items-start">
+                                <span className="material-icons text-[#005ea2] mr-3">directions_bus</span>
+                                <div>
+                                  <div className="font-medium">Public Transit</div>
+                                  <p className="text-sm text-neutral-500">
+                                    {location.transportationData.hasPublicTransit 
+                                      ? 'Available with bus and rail service' 
+                                      : 'Limited public transit options'}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex items-start">
+                                <span className="material-icons text-[#005ea2] mr-3">flight</span>
+                                <div>
+                                  <div className="font-medium">Air Travel</div>
+                                  <p className="text-sm text-neutral-500">
+                                    {location.transportationData.majorAirports > 0 
+                                      ? `${location.transportationData.majorAirports} major airport${location.transportationData.majorAirports > 1 ? 's' : ''} within 30 miles` 
+                                      : 'No major airports nearby'}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex items-start">
+                                <span className="material-icons text-[#005ea2] mr-3">directions_car</span>
+                                <div>
+                                  <div className="font-medium">Highway Access</div>
+                                  <p className="text-sm text-neutral-500">
+                                    {location.transportationData.interstateAccess 
+                                      ? 'Direct interstate highway access' 
+                                      : 'Limited highway connectivity'}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="h-64 bg-neutral-50 rounded flex items-center justify-center text-neutral-400">
+                            {/* Map placeholder */}
+                            <div className="text-center">
+                              <span className="material-icons text-3xl mb-2">map</span>
+                              <p>Transit map visualization</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="w-full lg:w-1/3">
+                          <div className="bg-neutral-50 p-4 rounded mb-6">
+                            <h4 className="font-medium mb-3">Average Commute Times</h4>
+                            <div className="space-y-3">
+                              <div className="flex justify-between items-center">
+                                <div className="flex items-center">
+                                  <span className="material-icons text-[#005ea2] mr-2">home_work</span>
+                                  <span>To Downtown</span>
+                                </div>
+                                <span className="font-medium">{Math.round(location.averageCommute * 0.7)} min</span>
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <div className="flex items-center">
+                                  <span className="material-icons text-[#005ea2] mr-2">location_city</span>
+                                  <span>To CBP Office</span>
+                                </div>
+                                <span className="font-medium">{Math.round(location.averageCommute * 0.9)} min</span>
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <div className="flex items-center">
+                                  <span className="material-icons text-[#005ea2] mr-2">flight_takeoff</span>
+                                  <span>To Airport</span>
+                                </div>
+                                <span className="font-medium">{Math.round(location.averageCommute * 1.2)} min</span>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="bg-neutral-50 p-4 rounded">
+                            <h4 className="font-medium mb-3">Transportation Resources</h4>
+                            <div className="space-y-3">
+                              <a href="#" className="flex items-start p-3 bg-white rounded border border-neutral-100 hover:border-[#005ea2] hover:shadow-sm transition-all">
+                                <span className="material-icons text-[#005ea2] mr-3">schedule</span>
+                                <div>
+                                  <div className="font-medium">Transit Schedules</div>
+                                  <p className="text-sm text-neutral-500">Bus and rail timetables</p>
+                                </div>
+                              </a>
+                              <a href="#" className="flex items-start p-3 bg-white rounded border border-neutral-100 hover:border-[#005ea2] hover:shadow-sm transition-all">
+                                <span className="material-icons text-[#005ea2] mr-3">directions_bike</span>
+                                <div>
+                                  <div className="font-medium">Bike Routes</div>
+                                  <p className="text-sm text-neutral-500">Maps of dedicated bike lanes and paths</p>
+                                </div>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
