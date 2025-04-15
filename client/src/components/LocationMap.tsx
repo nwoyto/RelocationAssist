@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Icon, LatLngTuple } from 'leaflet';
 import { Location } from '@/lib/types';
@@ -33,12 +33,20 @@ const highlightedIcon = new Icon({
 });
 
 // Helper component to set the map view
-function MapViewSetter({ center, zoom }: { center: LatLngTuple, zoom: number }) {
+function MapViewSetter({ center, zoom, selectedLocation }: { 
+  center: LatLngTuple;
+  zoom: number;
+  selectedLocation?: Location;
+}) {
   const map = useMap();
   
   useEffect(() => {
-    map.setView(center, zoom);
-  }, [center, zoom, map]);
+    if (selectedLocation) {
+      map.setView([selectedLocation.lat, selectedLocation.lng], 11);
+    } else {
+      map.setView(center, zoom);
+    }
+  }, [map, center, zoom, selectedLocation]);
   
   return null;
 }
@@ -52,38 +60,26 @@ interface LocationMapProps {
   interactive?: boolean;
 }
 
-const LocationMap: React.FC<LocationMapProps> = ({
+const LocationMap = ({
   locations,
   selectedLocationId,
   height = '400px',
   defaultCenter = [39.8283, -98.5795], // Center of US
   defaultZoom = 4,
   interactive = true
-}) => {
+}: LocationMapProps) => {
   const [, navigate] = useLocation();
-  const [mapCenter, setMapCenter] = useState<LatLngTuple>(defaultCenter);
-  const [mapZoom, setMapZoom] = useState<number>(defaultZoom);
 
-  // Update map view when selected location changes
-  useEffect(() => {
-    if (selectedLocationId) {
-      const selectedLocation = locations.find(loc => loc.id === selectedLocationId);
-      if (selectedLocation) {
-        setMapCenter([selectedLocation.lat, selectedLocation.lng]);
-        setMapZoom(11); // Closer zoom for selected location
-      }
-    } else {
-      // If no location is selected, reset to default view
-      setMapCenter(defaultCenter);
-      setMapZoom(defaultZoom);
-    }
-  }, [selectedLocationId, locations, defaultCenter, defaultZoom]);
+  // Find the selected location if it exists
+  const selectedLocation = selectedLocationId && locations?.length 
+    ? locations.find(loc => loc.id === selectedLocationId)
+    : undefined;
 
   return (
     <div style={{ height, width: '100%' }}>
       <MapContainer 
-        center={mapCenter} 
-        zoom={mapZoom} 
+        center={defaultCenter} 
+        zoom={defaultZoom} 
         style={{ height: '100%', width: '100%' }}
         zoomControl={interactive}
         scrollWheelZoom={interactive}
@@ -124,8 +120,12 @@ const LocationMap: React.FC<LocationMapProps> = ({
           </Marker>
         ))}
         
-        {/* This component will update the map view when center/zoom changes */}
-        <MapViewSetter center={mapCenter} zoom={mapZoom} />
+        {/* This component will update the map view when selected location changes */}
+        <MapViewSetter 
+          center={defaultCenter} 
+          zoom={defaultZoom} 
+          selectedLocation={selectedLocation} 
+        />
       </MapContainer>
     </div>
   );

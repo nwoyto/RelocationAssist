@@ -3,6 +3,9 @@ import { Link, useLocation } from "wouter";
 import { useLocations } from "@/hooks/useLocations";
 import { useQuery } from "@tanstack/react-query";
 import StarRating from "@/components/StarRating";
+import ExternalDataDisplay from "@/components/ExternalDataDisplay";
+import { Database } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const CompareView = () => {
   const { compareLocations, removeFromCompare, clearCompare } = useLocations();
@@ -259,6 +262,56 @@ const CompareView = () => {
           </div>
         </div>
         
+        {/* External Data Section */}
+        {locations.some(loc => loc.externalData) && (
+          <div className="mt-8">
+            <div className="flex items-center space-x-2 mb-4">
+              <Database className="h-4 w-4 text-[#005ea2]" />
+              <h3 className="text-lg font-bold">Authentic Data from data.gov</h3>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {locations.map(location => (
+                <div key={`data-${location.id}`} className="space-y-4">
+                  <div className="border-b pb-2">
+                    <Badge variant="outline" className="mb-1">{location.name}, {location.state}</Badge>
+                    <h4 className="text-md font-medium">Official Data Sources</h4>
+                  </div>
+                  
+                  {location.externalData ? (
+                    <>
+                      <ExternalDataDisplay 
+                        externalData={location.externalData}
+                        dataType="housing"
+                        title="Housing Data"
+                        description="Official housing statistics from data.gov"
+                      />
+                      
+                      <ExternalDataDisplay 
+                        externalData={location.externalData}
+                        dataType="education"
+                        title="Education Data"
+                        description="Official education statistics from data.gov"
+                      />
+                      
+                      <ExternalDataDisplay 
+                        externalData={location.externalData}
+                        dataType="safety"
+                        title="Safety Data"
+                        description="Official crime statistics from data.gov"
+                      />
+                    </>
+                  ) : (
+                    <div className="p-4 bg-gray-50 rounded-md text-center text-sm text-gray-500">
+                      No official data available for this location
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Action Buttons */}
         <div className="mt-6 flex justify-end space-x-4">
           <button className="py-2 px-4 border border-neutral-200 hover:border-neutral-300 rounded transition-colors">
