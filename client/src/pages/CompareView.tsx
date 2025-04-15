@@ -273,7 +273,7 @@ const CompareView = () => {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {locations.map(location => (
+              {locationArray.map(location => (
                 <div key={`data-${location.id}`} className="space-y-4">
                   <div className="border-b pb-2">
                     <Badge variant="outline" className="mb-1">{location.name}, {location.state}</Badge>

@@ -66,13 +66,13 @@ const Dashboard = () => {
                 <div className="mt-4 flex flex-wrap gap-2">
                   <span className="text-sm font-medium mr-2 text-neutral-500">Popular:</span>
                   {locations.slice(0, 4).map(location => (
-                    <a 
+                    <Link 
                       key={location.id}
                       href={`/location/${location.id}`} 
                       className="text-sm text-[#005ea2] hover:underline"
                     >
                       {location.name}, {location.state}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -191,8 +191,8 @@ const Dashboard = () => {
               <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
                 <div className="p-4 border-b border-neutral-100 flex justify-between items-center">
                   <h3 className="font-['Public_Sans'] font-semibold">CBP Port Locations</h3>
-                  <Link href="/map">
-                    <a className="text-[#005ea2] text-sm font-medium hover:underline">View Full Map</a>
+                  <Link href="/map" className="text-[#005ea2] text-sm font-medium hover:underline">
+                    View Full Map
                   </Link>
                 </div>
                 <div className="h-64 lg:h-96 relative">
@@ -207,11 +207,9 @@ const Dashboard = () => {
                     <div className="bg-white/90 p-4 rounded-lg shadow-lg max-w-md text-center">
                       <h4 className="font-medium mb-2">Interactive Location Map</h4>
                       <p className="text-sm text-neutral-600 mb-3">Explore CBP port locations and surrounding communities across the United States</p>
-                      <Link href="/map">
-                        <a className="bg-[#005ea2] hover:bg-[#00477b] text-white py-2 px-4 rounded font-medium transition-colors inline-flex items-center">
-                          <span className="material-icons text-sm align-text-bottom mr-1">map</span>
-                          Open Interactive Map
-                        </a>
+                      <Link href="/map" className="bg-[#005ea2] hover:bg-[#00477b] text-white py-2 px-4 rounded font-medium transition-colors inline-flex items-center">
+                        <span className="material-icons text-sm align-text-bottom mr-1">map</span>
+                        Open Interactive Map
                       </Link>
                     </div>
                   </div>
