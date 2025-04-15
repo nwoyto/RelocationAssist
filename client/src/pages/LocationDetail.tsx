@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import StarRating from "@/components/StarRating";
 import ExternalDataDisplay from "@/components/ExternalDataDisplay";
 import { Location } from "@/lib/types";
+import { getLocationImageUrl, getNeighborhoodImageUrl, getListingImageUrl } from "@/lib/utils";
 
 const LocationDetail = () => {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
@@ -322,6 +323,11 @@ const LocationDetail = () => {
                               {location.housingData.recentListings.map((listing: { price: number; bedrooms: number; bathrooms: number; sqft: number; address: string; isNew: boolean }, index: number) => (
                                 <div key={index} className="bg-white rounded shadow-sm overflow-hidden">
                                   <div className="h-32 bg-neutral-200 relative">
+                                    <img 
+                                      src={getListingImageUrl(listing.address, index)} 
+                                      alt={`${listing.bedrooms} bed, ${listing.bathrooms} bath home`}
+                                      className="w-full h-full object-cover"
+                                    />
                                     <div className="absolute top-2 left-2 bg-[#005ea2] text-white text-xs py-1 px-2 rounded">
                                       {listing.isNew ? 'New' : ''}
                                     </div>
