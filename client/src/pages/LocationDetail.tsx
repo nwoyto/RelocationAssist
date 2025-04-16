@@ -10,6 +10,8 @@ import RentcastMarketTrends from "@/components/RentcastMarketTrends";
 import RentcastPriceHistory from "@/components/RentcastPriceHistory";
 import ClimateDataDisplay from "@/components/ClimateDataDisplay";
 import ExpandedCensusDataDisplay from "@/components/ExpandedCensusDataDisplay";
+import LocationMap from "@/components/LocationMap";
+import '@/components/LocationMap.css';
 import { Location } from "@/lib/types";
 import { getLocationImageUrl, getNeighborhoodImageUrl, getListingImageUrl } from "@/lib/utils";
 
@@ -118,10 +120,13 @@ const LocationDetail = () => {
                       className="w-full sm:w-1/3 lg:w-2/5 bg-neutral-200 sm:h-auto" 
                       style={{ minHeight: '220px' }}
                     >
-                      <img 
-                        src={getLocationImageUrl(location.name, location.state, 'large')}
-                        alt={`${location.name}, ${location.state}`}
-                        className="w-full h-full object-cover"
+                      <LocationMap
+                        locations={[location]}
+                        selectedLocationId={location.id}
+                        height="100%"
+                        defaultCenter={[location.lat, location.lng]}
+                        defaultZoom={11}
+                        interactive={false}
                       />
                     </div>
                     
