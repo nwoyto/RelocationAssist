@@ -537,10 +537,13 @@ const LocationDetail = () => {
                           <div className="mb-6">
                             <h4 className="font-medium mb-3">Safety Comparison</h4>
                             <div className="h-64 bg-neutral-50 rounded overflow-hidden">
-                              <img 
-                                src={`https://placehold.co/800x400?text=Crime+statistics+for+${location.name}`} 
-                                alt={`Crime statistics comparison for ${location.name}`}
-                                className="w-full h-full object-cover"
+                              <LocationMap
+                                locations={[location]}
+                                selectedLocationId={location.id}
+                                height="100%"
+                                defaultCenter={[location.lat, location.lng]}
+                                defaultZoom={12}
+                                interactive={false}
                               />
                             </div>
                           </div>
@@ -614,10 +617,13 @@ const LocationDetail = () => {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                               <div className="bg-white rounded border border-neutral-100 overflow-hidden">
                                 <div className="h-40 bg-neutral-200">
-                                  <img 
-                                    src={`https://placehold.co/400x300?text=Cultural+district+in+${location.name}`} 
-                                    alt={`Cultural district in ${location.name}`}
-                                    className="w-full h-full object-cover"
+                                  <LocationMap
+                                    locations={[location]}
+                                    selectedLocationId={location.id}
+                                    height="100%"
+                                    defaultCenter={[location.lat, location.lng]}
+                                    defaultZoom={13}
+                                    interactive={false}
                                   />
                                 </div>
                                 <div className="p-3">
@@ -627,10 +633,13 @@ const LocationDetail = () => {
                               </div>
                               <div className="bg-white rounded border border-neutral-100 overflow-hidden">
                                 <div className="h-40 bg-neutral-200">
-                                  <img 
-                                    src={`https://placehold.co/400x300?text=Outdoor+recreation+in+${location.name}`} 
-                                    alt={`Outdoor recreation in ${location.name}`}
-                                    className="w-full h-full object-cover"
+                                  <LocationMap
+                                    locations={[location]}
+                                    selectedLocationId={location.id}
+                                    height="100%"
+                                    defaultCenter={[location.lat + 0.01, location.lng - 0.01]}
+                                    defaultZoom={13}
+                                    interactive={false}
                                   />
                                 </div>
                                 <div className="p-3">
@@ -753,10 +762,13 @@ const LocationDetail = () => {
                           </div>
                           
                           <div className="h-64 bg-neutral-50 rounded overflow-hidden">
-                            <img 
-                              src={`https://placehold.co/800x400?text=Transit+map+for+${location.name}`} 
-                              alt={`Transit map for ${location.name}`}
-                              className="w-full h-full object-cover"
+                            <LocationMap
+                              locations={[location]}
+                              selectedLocationId={location.id}
+                              height="100%"
+                              defaultCenter={[location.lat, location.lng]}
+                              defaultZoom={12}
+                              interactive={false}
                             />
                           </div>
                         </div>
