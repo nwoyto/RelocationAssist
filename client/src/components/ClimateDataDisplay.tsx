@@ -172,7 +172,7 @@ const ClimateDataDisplay: React.FC<ClimateDataDisplayProps> = ({ city, state }) 
           Climate Data for {city}, {state}
         </h2>
         <div className="mt-1 text-sm text-gray-500">
-          Elevation: {summary.elevation} ft | Climate Type: {summary.climateType}
+          Elevation: {climateData.elevation} ft | Climate Type: {summary.climateType}
         </div>
       </div>
 

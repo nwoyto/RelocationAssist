@@ -8,6 +8,8 @@ import ExternalDataDisplay from "@/components/ExternalDataDisplay";
 import RentcastPropertyListings from "@/components/RentcastPropertyListings";
 import RentcastMarketTrends from "@/components/RentcastMarketTrends";
 import RentcastPriceHistory from "@/components/RentcastPriceHistory";
+import ClimateDataDisplay from "@/components/ClimateDataDisplay";
+import ExpandedCensusDataDisplay from "@/components/ExpandedCensusDataDisplay";
 import { Location } from "@/lib/types";
 import { getLocationImageUrl, getNeighborhoodImageUrl, getListingImageUrl } from "@/lib/utils";
 
