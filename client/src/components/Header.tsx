@@ -8,9 +8,9 @@ const Header = () => {
 
   return (
     <header className="bg-[#1a4480] text-white shadow-md">
-      <div className="container mx-auto px-0 md:px-1 lg:px-2">
+      <div className="w-full">
         <div className="flex justify-between items-center py-3">
-          <div className="flex items-center space-x-2 pl-2 md:pl-0">
+          <div className="flex items-center pl-4">
             <Link href="/">
               <div className="flex items-center cursor-pointer">
                 <img 
@@ -26,7 +26,7 @@ const Header = () => {
             </Link>
           </div>
           
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 pr-4">
             <div className="relative">
               <button 
                 onClick={() => setIsHelpOpen(!isHelpOpen)} 
