@@ -3,8 +3,8 @@ import cbpLogo from "../assets/cbp-logo.png";
 const Footer = () => {
   return (
     <footer className="bg-neutral-800 text-white py-6">
-      <div className="container mx-auto px-2 md:px-3 lg:px-4">
-        <div className="flex flex-col md:flex-row justify-between">
+      <div className="w-full">
+        <div className="flex flex-col md:flex-row justify-between px-4">
           <div className="mb-6 md:mb-0">
             <div className="flex items-center">
               <img 
@@ -55,7 +55,7 @@ const Footer = () => {
           </div>
         </div>
         
-        <div className="border-t border-white/10 mt-6 pt-6 flex flex-col md:flex-row justify-between items-center">
+        <div className="border-t border-white/10 mt-6 pt-6 flex flex-col md:flex-row justify-between items-center px-4">
           <p className="text-xs text-white/60 mb-4 md:mb-0">
             © {new Date().getFullYear()} U.S. Customs and Border Protection. All rights reserved.
           </p>
