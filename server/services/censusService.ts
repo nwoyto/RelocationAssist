@@ -162,12 +162,18 @@ export interface ExpandedCensusData {
 export async function getExpandedDemographics(state: string, city: string): Promise<ExpandedDemographics | null> {
   try {
     // Prepare the query to get FIPS codes for the location
-    const geolookupUrl = `${CENSUS_BASE_URL}/2021/pep/population?get=NAME&for=place:*&in=state:*&key=${CENSUS_API_KEY}`;
+    const geolookupUrl = `${CENSUS_BASE_URL}/2021/acs/acs5?get=NAME&for=place:*&in=state:*&key=${CENSUS_API_KEY}`;
     const geoResponse = await axios.get(geolookupUrl);
     const geoData = geoResponse.data;
     
-    // Find the matching location
-    const locationMatch = geoData.find((row: any[]) => {
+    // Ensure geoData is an array before trying to find matching location
+    if (!Array.isArray(geoData)) {
+      console.error('Census API response is not in the expected format:', geoData);
+      return null;
+    }
+    
+    // Find the matching location (skip header row)
+    const locationMatch = geoData.slice(1).find((row: any[]) => {
       const placeName = row[0];
       return placeName.toLowerCase().includes(city.toLowerCase()) && placeName.includes(state);
     });
@@ -284,12 +290,18 @@ export async function getExpandedDemographics(state: string, city: string): Prom
 export async function getIncomeEmploymentData(state: string, city: string): Promise<IncomeEmploymentData | null> {
   try {
     // Prepare the query to get FIPS codes for the location
-    const geolookupUrl = `${CENSUS_BASE_URL}/2021/pep/population?get=NAME&for=place:*&in=state:*&key=${CENSUS_API_KEY}`;
+    const geolookupUrl = `${CENSUS_BASE_URL}/2021/acs/acs5?get=NAME&for=place:*&in=state:*&key=${CENSUS_API_KEY}`;
     const geoResponse = await axios.get(geolookupUrl);
     const geoData = geoResponse.data;
     
-    // Find the matching location
-    const locationMatch = geoData.find((row: any[]) => {
+    // Ensure geoData is an array before trying to find matching location
+    if (!Array.isArray(geoData)) {
+      console.error('Census API response is not in the expected format:', geoData);
+      return null;
+    }
+    
+    // Find the matching location (skip header row)
+    const locationMatch = geoData.slice(1).find((row: any[]) => {
       const placeName = row[0];
       return placeName.toLowerCase().includes(city.toLowerCase()) && placeName.includes(state);
     });
@@ -405,12 +417,18 @@ export async function getIncomeEmploymentData(state: string, city: string): Prom
 export async function getExpandedHousingData(state: string, city: string): Promise<ExpandedHousingData | null> {
   try {
     // Prepare the query to get FIPS codes for the location
-    const geolookupUrl = `${CENSUS_BASE_URL}/2021/pep/population?get=NAME&for=place:*&in=state:*&key=${CENSUS_API_KEY}`;
+    const geolookupUrl = `${CENSUS_BASE_URL}/2021/acs/acs5?get=NAME&for=place:*&in=state:*&key=${CENSUS_API_KEY}`;
     const geoResponse = await axios.get(geolookupUrl);
     const geoData = geoResponse.data;
     
-    // Find the matching location
-    const locationMatch = geoData.find((row: any[]) => {
+    // Ensure geoData is an array before trying to find matching location
+    if (!Array.isArray(geoData)) {
+      console.error('Census API response is not in the expected format:', geoData);
+      return null;
+    }
+    
+    // Find the matching location (skip header row)
+    const locationMatch = geoData.slice(1).find((row: any[]) => {
       const placeName = row[0];
       return placeName.toLowerCase().includes(city.toLowerCase()) && placeName.includes(state);
     });
@@ -500,12 +518,18 @@ export async function getExpandedHousingData(state: string, city: string): Promi
 export async function getEducationData(state: string, city: string): Promise<EducationData | null> {
   try {
     // Prepare the query to get FIPS codes for the location
-    const geolookupUrl = `${CENSUS_BASE_URL}/2021/pep/population?get=NAME&for=place:*&in=state:*&key=${CENSUS_API_KEY}`;
+    const geolookupUrl = `${CENSUS_BASE_URL}/2021/acs/acs5?get=NAME&for=place:*&in=state:*&key=${CENSUS_API_KEY}`;
     const geoResponse = await axios.get(geolookupUrl);
     const geoData = geoResponse.data;
     
-    // Find the matching location
-    const locationMatch = geoData.find((row: any[]) => {
+    // Ensure geoData is an array before trying to find matching location
+    if (!Array.isArray(geoData)) {
+      console.error('Census API response is not in the expected format:', geoData);
+      return null;
+    }
+    
+    // Find the matching location (skip header row)
+    const locationMatch = geoData.slice(1).find((row: any[]) => {
       const placeName = row[0];
       return placeName.toLowerCase().includes(city.toLowerCase()) && placeName.includes(state);
     });
@@ -590,12 +614,18 @@ export async function getEducationData(state: string, city: string): Promise<Edu
 export async function getCommuteData(state: string, city: string): Promise<CommuteData | null> {
   try {
     // Prepare the query to get FIPS codes for the location
-    const geolookupUrl = `${CENSUS_BASE_URL}/2021/pep/population?get=NAME&for=place:*&in=state:*&key=${CENSUS_API_KEY}`;
+    const geolookupUrl = `${CENSUS_BASE_URL}/2021/acs/acs5?get=NAME&for=place:*&in=state:*&key=${CENSUS_API_KEY}`;
     const geoResponse = await axios.get(geolookupUrl);
     const geoData = geoResponse.data;
     
-    // Find the matching location
-    const locationMatch = geoData.find((row: any[]) => {
+    // Ensure geoData is an array before trying to find matching location
+    if (!Array.isArray(geoData)) {
+      console.error('Census API response is not in the expected format:', geoData);
+      return null;
+    }
+    
+    // Find the matching location (skip header row)
+    const locationMatch = geoData.slice(1).find((row: any[]) => {
       const placeName = row[0];
       return placeName.toLowerCase().includes(city.toLowerCase()) && placeName.includes(state);
     });
