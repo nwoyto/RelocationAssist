@@ -3,7 +3,7 @@ import cbpLogo from "../assets/cbp-logo.png";
 const Footer = () => {
   return (
     <footer className="bg-neutral-800 text-white py-6">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-2 md:px-3 lg:px-4">
         <div className="flex flex-col md:flex-row justify-between">
           <div className="mb-6 md:mb-0">
             <div className="flex items-center">
