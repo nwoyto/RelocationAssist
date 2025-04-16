@@ -355,6 +355,8 @@ export async function getClimateData(city: string, state: string): Promise<Clima
     
     try {
       // If we have a token, attempt to get real data from NOAA
+      // NOAA requires the token in the header as "token"
+      console.log('Using NOAA API key:', NOAA_TOKEN ? 'PRESENT' : 'MISSING');
       const headers = {
         'token': NOAA_TOKEN
       };
@@ -366,6 +368,41 @@ export async function getClimateData(city: string, state: string): Promise<Clima
       
       const startDateFormatted = startDate.toISOString().split('T')[0];
       const endDateFormatted = endDate.toISOString().split('T')[0];
+      
+      // Try adding cities in NOAA map to more closely match Chicago
+      console.log(`Station ID for ${city}, ${state}: ${stationId}`);
+      
+      // Add some more major city stations to improve coverage
+      if (!cityClimateMap['chicago_il'] && city.toLowerCase() === 'chicago' && state.toLowerCase() === 'il') {
+        console.log('Adding Chicago climate data to city map...');
+        cityClimateMap['chicago_il'] = {
+          lat: 41.8781,
+          lng: -87.6298,
+          elevation: 597,
+          annualAvgTemp: 49.9,
+          annualMaxTemp: 59.1,
+          annualMinTemp: 40.7,
+          annualPrecip: 38.0,
+          annualSnow: 36.7,
+          sunnyDays: 189,
+          rainyDays: 125,
+          snowyDays: 43,
+          comfortIndex: 7,
+          monthlyTemp: [24.8, 28.1, 37.9, 49.0, 59.8, 69.6, 74.0, 73.0, 65.9, 54.1, 41.7, 30.2],
+          monthlyMaxTemp: [32.0, 35.9, 46.6, 58.9, 70.0, 80.1, 84.1, 82.6, 75.8, 62.8, 49.1, 36.9],
+          monthlyMinTemp: [17.5, 20.4, 29.2, 39.1, 49.7, 59.2, 63.9, 63.5, 56.0, 45.4, 34.3, 23.6],
+          monthlyPrecip: [2.1, 2.0, 2.5, 3.4, 4.0, 4.0, 3.7, 4.0, 3.3, 3.2, 3.0, 2.8],
+          monthlySnow: [11.5, 9.1, 5.6, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 1.3, 8.1],
+          recordHigh: 105,
+          recordHighDate: 'July 24, 1934',
+          recordLow: -27,
+          recordLowDate: 'January 20, 1985',
+          recordPrecip: 6.86,
+          recordPrecipDate: 'July 23, 2011',
+          recordSnow: 23.0,
+          recordSnowDate: 'January 26-27, 1967'
+        };
+      }
       
       // Get temperature data for the station
       const tempUrl = `${NOAA_BASE_URL}/data?datasetid=GHCND&stationid=${stationId}&startdate=${startDateFormatted}&enddate=${endDateFormatted}&datatypeid=TMAX,TMIN,TAVG&limit=1000&units=standard`;
