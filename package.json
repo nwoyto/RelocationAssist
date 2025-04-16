@@ -11,6 +11,8 @@
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.788.0",
+    "@aws-sdk/lib-dynamodb": "^3.789.0",
     "@hookform/resolvers": "^3.9.1",
     "@jridgewell/trace-mapping": "^0.3.25",
     "@neondatabase/serverless": "^0.10.4",
@@ -44,6 +46,7 @@
     "@replit/vite-plugin-shadcn-theme-json": "^0.0.4",
     "@tanstack/react-query": "^5.60.5",
     "@types/leaflet": "^1.9.17",
+    "aws-sdk": "^2.1692.0",
     "axios": "^1.8.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
