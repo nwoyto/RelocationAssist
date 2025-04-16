@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import cbpLogo from "../assets/cbp-logo.svg";
+import cbpLogo from "../assets/cbp-logo.png";
 
 const Header = () => {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
@@ -16,7 +16,7 @@ const Header = () => {
                 <img 
                   src={cbpLogo} 
                   alt="CBP Logo" 
-                  className="h-14 w-14 mr-3"
+                  className="h-16 w-16 mr-3 bg-white rounded-full p-1"
                 />
                 <div>
                   <h1 className="font-['Public_Sans'] font-bold text-xl md:text-2xl leading-tight">CBP Relocation Resources</h1>
