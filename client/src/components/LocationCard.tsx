@@ -16,15 +16,18 @@ const LocationCard = ({ location, onSelect, isInCompare, onCompareToggle }: Loca
 
   return (
     <div 
-      className="p-4 hover:bg-[#f8fafc] border border-[#e2e8f0] cursor-pointer transition-all shadow-sm hover:shadow-md" 
+      className="p-5 hover:bg-gray-50 border border-gray-100 cursor-pointer transition-all shadow-sm hover:shadow-md bg-white" 
       onClick={onSelect}
-      style={{ borderRadius: '4px' }}
+      style={{ 
+        borderRadius: '12px',
+        transition: 'all 0.2s ease'
+      }}
     >
-      <div className="flex justify-between items-start mb-3">
+      <div className="flex justify-between items-start mb-4">
         <div>
-          <h3 className="font-semibold text-lg text-[#0f172a]">{location.name}, {location.state}</h3>
-          <div className="text-xs text-[#64748b] flex items-center">
-            <span className="inline-block w-2 h-2 bg-[#0ea5e9] mr-1.5" style={{ borderRadius: '0px' }}></span>
+          <h3 className="font-medium text-lg text-gray-900" style={{ letterSpacing: '-0.01em' }}>{location.name}, {location.state}</h3>
+          <div className="text-xs text-gray-500 flex items-center mt-1">
+            <span className="inline-block w-3 h-3 bg-blue-500 mr-1.5" style={{ borderRadius: '4px' }}></span>
             {location.region} Region
           </div>
         </div>
@@ -33,38 +36,41 @@ const LocationCard = ({ location, onSelect, isInCompare, onCompareToggle }: Loca
             e.stopPropagation();
             onCompareToggle();
           }} 
-          className={`p-1.5 hover:bg-[#e0f2fe] transition-colors ${
-            isInCompare ? 'bg-[#e0f2fe] text-[#0284c7]' : 'text-[#94a3b8]'
+          className={`p-1.5 transition-colors ${
+            isInCompare ? 'bg-blue-50 text-blue-500' : 'text-gray-400 hover:text-gray-500'
           }`}
-          style={{ borderRadius: '2px' }}
+          style={{ borderRadius: '8px' }}
           title={isInCompare ? "Remove from comparison" : "Add to comparison"}
         >
-          <span className="material-icons text-sm">
+          <span className="material-icons text-base">
             {isInCompare ? 'compare' : 'add_circle_outline'}
           </span>
         </button>
       </div>
       
-      <div className="grid grid-cols-2 gap-2 my-3 text-sm">
-        <div className="bg-[#f1f5f9] p-2" style={{ borderRadius: '2px' }}>
-          <div className="text-xs text-[#64748b] font-medium tracking-wide">MEDIAN HOME</div>
-          <div className="font-semibold text-[#334155]">${formatPrice(location.housingData.medianHomePrice)}</div>
+      <div className="grid grid-cols-2 gap-3 my-4">
+        <div className="bg-gray-50 p-3 rounded-lg">
+          <div className="text-xs text-gray-500 font-normal mb-1">Median Home</div>
+          <div className="font-medium text-gray-900">${formatPrice(location.housingData.medianHomePrice)}</div>
         </div>
-        <div className="bg-[#f1f5f9] p-2" style={{ borderRadius: '2px' }}>
-          <div className="text-xs text-[#64748b] font-medium tracking-wide">MEDIAN RENT</div>
-          <div className="font-semibold text-[#334155]">${formatPrice(location.housingData.medianRent)}/mo</div>
+        <div className="bg-gray-50 p-3 rounded-lg">
+          <div className="text-xs text-gray-500 font-normal mb-1">Median Rent</div>
+          <div className="font-medium text-gray-900">${formatPrice(location.housingData.medianRent)}/mo</div>
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-3 border-t border-[#e2e8f0] pt-3">
+      <div className="flex items-center justify-between mt-4 border-t border-gray-100 pt-4">
         <div className="flex items-center">
-          <span className="text-xs font-medium mr-1 text-[#64748b]">RATING</span>
+          <span className="text-xs text-gray-500 font-normal mr-1">Rating</span>
           <StarRating rating={location.rating} />
-          <span className="ml-1 text-xs text-[#64748b] font-medium">{location.rating}</span>
+          <span className="ml-1 text-xs text-gray-500 font-medium">{location.rating}</span>
         </div>
-        <div className="flex items-center text-[#0284c7] font-medium text-sm">
-          <span>VIEW DETAILS</span>
-          <span className="material-icons text-sm ml-1">arrow_forward</span>
+        <div className="flex items-center text-blue-500 font-medium text-sm">
+          <span>View Details</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
         </div>
       </div>
     </div>

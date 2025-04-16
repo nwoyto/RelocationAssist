@@ -60,62 +60,66 @@ const CompareView = () => {
   return (
     <div className="p-4 md:p-6">
       <div className="max-w-6xl mx-auto">
-        {/* Compare Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 bg-[#f8fafc] p-4 border-l-4 border-l-[#0ea5e9]" style={{ borderRadius: '2px' }}>
+        {/* Compare Header - Apple-inspired design */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <div>
-            <h2 className="text-2xl font-bold mb-1 text-[#0f172a] flex items-center">
-              <span className="material-icons mr-2 text-[#0284c7]">compare_arrows</span>
+            <h2 className="text-3xl font-semibold mb-2 text-gray-900" style={{ letterSpacing: '-0.025em' }}>
               Compare Locations
             </h2>
-            <p className="text-[#64748b]">
-              Comparing <span className="font-semibold text-[#334155]">{locationArray.length}</span> location{locationArray.length > 1 ? 's' : ''} side by side
+            <p className="text-gray-500">
+              Comparing <span className="text-gray-700">{locationArray.length}</span> location{locationArray.length > 1 ? 's' : ''} side by side
             </p>
           </div>
           <div className="mt-4 sm:mt-0 flex items-center">
-            <Link href="/" className="mr-3 flex items-center text-[#0284c7] hover:text-[#0369a1] font-medium">
-              <span className="material-icons mr-1 text-sm">add</span>
-              <span>ADD LOCATION</span>
+            <Link href="/" className="mr-4 flex items-center text-blue-500 hover:text-blue-600 font-medium">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>Add Location</span>
             </Link>
             <button 
               onClick={() => {
                 clearCompare();
                 navigate('/');
               }} 
-              className="flex items-center bg-white py-2 px-4 border border-[#e2e8f0] hover:bg-[#f1f5f9] transition-colors"
-              style={{ borderRadius: '2px' }}
+              className="flex items-center bg-gray-100 hover:bg-gray-200 py-2 px-4 transition-colors"
+              style={{ borderRadius: '8px' }}
             >
-              <span className="material-icons mr-1 text-sm text-[#64748b]">close</span>
-              <span className="text-[#334155] font-medium">CLOSE</span>
+              <span className="text-gray-700 font-medium">Close</span>
             </button>
           </div>
         </div>
         
-        {/* Compare Table */}
-        <div className="bg-white border border-[#e2e8f0] overflow-hidden" style={{ borderRadius: '2px' }}>
+        {/* Compare Table - Apple-inspired */}
+        <div className="bg-white border border-gray-200 overflow-hidden shadow-sm" style={{ borderRadius: '12px' }}>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-[#e2e8f0]">
+            <table className="min-w-full divide-y divide-gray-200">
               <thead>
-                <tr className="bg-[#0284c7] text-white">
-                  <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider sticky left-0 bg-[#0284c7] min-w-[200px] border-r border-[#0ea5e9]" style={{ letterSpacing: '1px' }}>
-                    CATEGORY
+                <tr className="bg-gray-50">
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky left-0 bg-gray-50 min-w-[200px]" style={{ letterSpacing: '0.05em' }}>
+                    Category
                   </th>
                   {locations.map(location => (
-                    <th key={location.id} className="px-6 py-4 text-left text-sm font-medium min-w-[250px] border-r border-[#0ea5e9] last:border-r-0">
+                    <th key={location.id} className="px-6 py-4 text-left min-w-[250px]">
                       <div className="flex justify-between items-center">
                         <div>
-                          <div className="font-bold tracking-tight">{location.name}, {location.state}</div>
-                          <div className="text-xs text-white/90 flex items-center mt-1">
-                            <span className="inline-block w-2 h-2 bg-white mr-1.5" style={{ borderRadius: '0px' }}></span>
+                          <div className="font-medium text-gray-900" style={{ letterSpacing: '-0.01em' }}>{location.name}, {location.state}</div>
+                          <div className="text-xs text-gray-500 flex items-center mt-1">
+                            <span className="inline-block w-3 h-3 bg-blue-500 mr-1.5" style={{ borderRadius: '4px' }}></span>
                             {location.region}
                           </div>
                         </div>
                         <button 
                           onClick={() => removeFromCompare(location.id)} 
-                          className="text-white/80 hover:text-white hover:bg-[#0ea5e9] p-1 transition-colors ml-2"
-                          style={{ borderRadius: '2px' }}
+                          className="text-gray-400 hover:text-gray-500 p-1.5 bg-gray-100 hover:bg-gray-200 transition-colors ml-2"
+                          style={{ borderRadius: '8px' }}
                           title="Remove from comparison"
                         >
-                          <span className="material-icons text-sm">close</span>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
                         </button>
                       </div>
                     </th>
@@ -139,11 +143,14 @@ const CompareView = () => {
                 </tr>
                 
                 {/* Housing */}
-                <tr className="bg-[#f0f9ff] font-medium border-l-4 border-l-[#0ea5e9]">
-                  <td colSpan={locationArray.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-[#f0f9ff]">
-                    <div className="flex items-center text-[#0284c7] uppercase tracking-wide text-xs font-bold">
-                      <span className="material-icons text-sm mr-2">home</span>
-                      Housing
+                <tr className="bg-gray-50">
+                  <td colSpan={locationArray.length + 1} className="px-6 py-4 text-sm sticky left-0 bg-gray-50">
+                    <div className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 mr-2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                      </svg>
+                      <span className="font-medium text-gray-900">Housing</span>
                     </div>
                   </td>
                 </tr>
@@ -177,11 +184,14 @@ const CompareView = () => {
                 </tr>
                 
                 {/* Schools */}
-                <tr className="bg-[#f0f9ff] font-medium border-l-4 border-l-[#0ea5e9]">
-                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-[#f0f9ff]">
-                    <div className="flex items-center text-[#0284c7] uppercase tracking-wide text-xs font-bold">
-                      <span className="material-icons text-sm mr-2">school</span>
-                      Education
+                <tr className="bg-gray-50">
+                  <td colSpan={locationArray.length + 1} className="px-6 py-4 text-sm sticky left-0 bg-gray-50">
+                    <div className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 mr-2">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                      </svg>
+                      <span className="font-medium text-gray-900">Education</span>
                     </div>
                   </td>
                 </tr>
@@ -203,11 +213,13 @@ const CompareView = () => {
                 </tr>
                 
                 {/* Safety */}
-                <tr className="bg-[#f0f9ff] font-medium border-l-4 border-l-[#0ea5e9]">
-                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-[#f0f9ff]">
-                    <div className="flex items-center text-[#0284c7] uppercase tracking-wide text-xs font-bold">
-                      <span className="material-icons text-sm mr-2">shield</span>
-                      Safety
+                <tr className="bg-gray-50">
+                  <td colSpan={locationArray.length + 1} className="px-6 py-4 text-sm sticky left-0 bg-gray-50">
+                    <div className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 mr-2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                      </svg>
+                      <span className="font-medium text-gray-900">Safety</span>
                     </div>
                   </td>
                 </tr>
@@ -244,11 +256,17 @@ const CompareView = () => {
                 </tr>
                 
                 {/* Lifestyle */}
-                <tr className="bg-[#f0f9ff] font-medium border-l-4 border-l-[#0ea5e9]">
-                  <td colSpan={locations.length + 1} className="px-6 py-3 text-sm sticky left-0 bg-[#f0f9ff]">
-                    <div className="flex items-center text-[#0284c7] uppercase tracking-wide text-xs font-bold">
-                      <span className="material-icons text-sm mr-2">local_cafe</span>
-                      Lifestyle
+                <tr className="bg-gray-50">
+                  <td colSpan={locationArray.length + 1} className="px-6 py-4 text-sm sticky left-0 bg-gray-50">
+                    <div className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 mr-2">
+                        <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                        <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                        <line x1="6" y1="1" x2="6" y2="4"></line>
+                        <line x1="10" y1="1" x2="10" y2="4"></line>
+                        <line x1="14" y1="1" x2="14" y2="4"></line>
+                      </svg>
+                      <span className="font-medium text-gray-900">Lifestyle</span>
                     </div>
                   </td>
                 </tr>
