@@ -637,8 +637,8 @@ const LocationDetail = () => {
                                     locations={[location]}
                                     selectedLocationId={location.id}
                                     height="100%"
-                                    defaultCenter={[location.lat + 0.01, location.lng - 0.01]}
-                                    defaultZoom={13}
+                                    defaultCenter={[location.lat, location.lng]}
+                                    defaultZoom={14}
                                     interactive={false}
                                   />
                                 </div>
