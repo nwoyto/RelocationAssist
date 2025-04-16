@@ -3,6 +3,8 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { enrichLocationData } from "./services/dataService";
 import * as rentcastService from "./services/rentcastService";
+import * as censusService from "./services/censusService";
+import * as climateService from "./services/climateService";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // API Routes for locations
@@ -175,6 +177,162 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch locations for comparison" });
+    }
+  });
+
+  // Census Bureau API Routes
+  app.get("/api/census/expanded", async (req, res) => {
+    try {
+      const city = req.query.city as string;
+      const state = req.query.state as string;
+      
+      if (!city || !state) {
+        return res.status(400).json({ error: "City and state are required" });
+      }
+      
+      const censusData = await censusService.getAllExpandedCensusData(city, state);
+      
+      if (!censusData) {
+        return res.status(404).json({ error: "Census data not found for this location" });
+      }
+      
+      res.json(censusData);
+    } catch (error) {
+      console.error("Error fetching expanded census data:", error);
+      res.status(500).json({ error: "Failed to fetch expanded census data" });
+    }
+  });
+
+  app.get("/api/census/demographics", async (req, res) => {
+    try {
+      const city = req.query.city as string;
+      const state = req.query.state as string;
+      
+      if (!city || !state) {
+        return res.status(400).json({ error: "City and state are required" });
+      }
+      
+      const demographics = await censusService.getExpandedDemographics(city, state);
+      
+      if (!demographics) {
+        return res.status(404).json({ error: "Demographic data not found for this location" });
+      }
+      
+      res.json(demographics);
+    } catch (error) {
+      console.error("Error fetching demographic data:", error);
+      res.status(500).json({ error: "Failed to fetch demographic data" });
+    }
+  });
+
+  app.get("/api/census/income-employment", async (req, res) => {
+    try {
+      const city = req.query.city as string;
+      const state = req.query.state as string;
+      
+      if (!city || !state) {
+        return res.status(400).json({ error: "City and state are required" });
+      }
+      
+      const incomeEmployment = await censusService.getIncomeEmploymentData(city, state);
+      
+      if (!incomeEmployment) {
+        return res.status(404).json({ error: "Income and employment data not found for this location" });
+      }
+      
+      res.json(incomeEmployment);
+    } catch (error) {
+      console.error("Error fetching income and employment data:", error);
+      res.status(500).json({ error: "Failed to fetch income and employment data" });
+    }
+  });
+
+  app.get("/api/census/housing", async (req, res) => {
+    try {
+      const city = req.query.city as string;
+      const state = req.query.state as string;
+      
+      if (!city || !state) {
+        return res.status(400).json({ error: "City and state are required" });
+      }
+      
+      const housingData = await censusService.getExpandedHousingData(city, state);
+      
+      if (!housingData) {
+        return res.status(404).json({ error: "Housing data not found for this location" });
+      }
+      
+      res.json(housingData);
+    } catch (error) {
+      console.error("Error fetching housing data:", error);
+      res.status(500).json({ error: "Failed to fetch housing data" });
+    }
+  });
+
+  app.get("/api/census/education", async (req, res) => {
+    try {
+      const city = req.query.city as string;
+      const state = req.query.state as string;
+      
+      if (!city || !state) {
+        return res.status(400).json({ error: "City and state are required" });
+      }
+      
+      const educationData = await censusService.getEducationData(city, state);
+      
+      if (!educationData) {
+        return res.status(404).json({ error: "Education data not found for this location" });
+      }
+      
+      res.json(educationData);
+    } catch (error) {
+      console.error("Error fetching education data:", error);
+      res.status(500).json({ error: "Failed to fetch education data" });
+    }
+  });
+
+  app.get("/api/census/commute", async (req, res) => {
+    try {
+      const city = req.query.city as string;
+      const state = req.query.state as string;
+      
+      if (!city || !state) {
+        return res.status(400).json({ error: "City and state are required" });
+      }
+      
+      const commuteData = await censusService.getCommuteData(city, state);
+      
+      if (!commuteData) {
+        return res.status(404).json({ error: "Commute data not found for this location" });
+      }
+      
+      res.json(commuteData);
+    } catch (error) {
+      console.error("Error fetching commute data:", error);
+      res.status(500).json({ error: "Failed to fetch commute data" });
+    }
+  });
+
+  // Climate API Routes
+  app.get("/api/climate", async (req, res) => {
+    try {
+      const city = req.query.city as string;
+      const state = req.query.state as string;
+      
+      if (!city || !state) {
+        return res.status(400).json({ error: "City and state are required" });
+      }
+      
+      const climateData = await climateService.getClimateData(city, state);
+      
+      if (!climateData) {
+        return res.status(404).json({ error: "Climate data not found for this location" });
+      }
+      
+      res.json(climateData);
+    } catch (error) {
+      console.error("Error fetching climate data:", error);
+      res.status(500).json({ error: "Failed to fetch climate data" });
     }
   });
 
