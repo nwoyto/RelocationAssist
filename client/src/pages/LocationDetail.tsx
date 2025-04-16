@@ -238,6 +238,26 @@ const LocationDetail = () => {
                     >
                       <span className="material-icons text-sm align-text-top mr-1">directions_car</span> Transportation
                     </button>
+                    <button 
+                      onClick={() => setActiveTab('climate')} 
+                      className={`px-4 py-3 font-medium whitespace-nowrap ${
+                        activeTab === 'climate' 
+                          ? 'border-b-2 border-[#005ea2] text-[#005ea2]' 
+                          : 'text-neutral-500'
+                      }`}
+                    >
+                      <span className="material-icons text-sm align-text-top mr-1">wb_sunny</span> Climate
+                    </button>
+                    <button 
+                      onClick={() => setActiveTab('census')} 
+                      className={`px-4 py-3 font-medium whitespace-nowrap ${
+                        activeTab === 'census' 
+                          ? 'border-b-2 border-[#005ea2] text-[#005ea2]' 
+                          : 'text-neutral-500'
+                      }`}
+                    >
+                      <span className="material-icons text-sm align-text-top mr-1">people</span> Census Data
+                    </button>
                   </div>
                   
                   {/* Tab Content */}
@@ -789,6 +809,30 @@ const LocationDetail = () => {
                   </div>
                 </div>
               </div>
+              
+              {/* Climate Tab */}
+              {activeTab === 'climate' && (
+                <div className="mb-6">
+                  <div className="flex flex-col gap-6">
+                    <div className="w-full">
+                      <h3 className="font-['Public_Sans'] text-lg font-semibold mb-4">Climate Data</h3>
+                      <ClimateDataDisplay city={location.name} state={location.state} />
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Census Data Tab */}
+              {activeTab === 'census' && (
+                <div className="mb-6">
+                  <div className="flex flex-col gap-6">
+                    <div className="w-full">
+                      <h3 className="font-['Public_Sans'] text-lg font-semibold mb-4">Expanded Census Data</h3>
+                      <ExpandedCensusDataDisplay city={location.name} state={location.state} />
+                    </div>
+                  </div>
+                </div>
+              )}
               
               {/* Related Resources */}
               <div className="bg-white rounded-lg shadow-md p-6">
