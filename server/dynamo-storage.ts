@@ -133,10 +133,16 @@ export class DynamoStorage implements IStorage {
   async createUser(insertUser: InsertUser): Promise<User> {
     try {
       const id = userIdCounter++;
+      // Ensure all required fields are properly typed for User
       const user: User = {
-        ...insertUser,
         id,
-        createdAt: new Date().toISOString()
+        username: insertUser.username,
+        password: insertUser.password,
+        email: insertUser.email || null,
+        firstName: insertUser.firstName || null,
+        lastName: insertUser.lastName || null,
+        createdAt: new Date(),
+        updatedAt: new Date()
       };
       
       await docClient.send(
@@ -276,7 +282,7 @@ export class DynamoStorage implements IStorage {
         id,
         userId,
         locationId,
-        createdAt: new Date().toISOString()
+        createdAt: new Date()
       };
       
       await docClient.send(

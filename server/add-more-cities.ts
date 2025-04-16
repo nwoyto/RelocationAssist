@@ -1,7 +1,7 @@
 import { db, pool } from './db';
 import { docClient, TABLES } from './dynamodb';
 import { PutCommand } from '@aws-sdk/lib-dynamodb';
-import { moreCities } from './more-cities';
+import { moreCities, CityData } from './more-cities';
 import { insertLocationSchema, locations } from '@shared/schema';
 import { eq } from 'drizzle-orm';
 
@@ -144,18 +144,61 @@ async function addMoreCities() {
         };
       });
       
+      // Determine climate based on region
+      const getClimate = (region: string, state: string) => {
+        if (region === "Northeast") return "Humid continental";
+        if (region === "Southeast") return "Humid subtropical";
+        if (region === "Midwest") return "Continental";
+        if (region === "Southwest") {
+          if (state === "AZ" || state === "NM") return "Desert";
+          return "Semi-arid";
+        }
+        if (region === "West") {
+          if (state === "CA" || state === "OR" || state === "WA") return "Mediterranean";
+          if (state === "HI") return "Tropical";
+          if (state === "AK") return "Subarctic";
+          return "Mountain";
+        }
+        return "Temperate";
+      };
+      
+      // Determine a rating based on several factors
+      const calculateRating = (city: CityData) => {
+        // Calculate a rating from 1-5 based on cost of living, crime rate, etc.
+        let rating = 3.0; // Default rating
+        
+        // Adjust for cost of living
+        if (city.costOfLivingIndex < 90) rating += 0.5;
+        else if (city.costOfLivingIndex > 120) rating -= 0.5;
+        
+        // Adjust for crime rate
+        if (city.crimeRate === "Very Low") rating += 0.7;
+        else if (city.crimeRate === "Low") rating += 0.4;
+        else if (city.crimeRate === "High") rating -= 0.4;
+        
+        // Adjust for transit
+        if (city.transitScore > 45) rating += 0.3;
+        
+        // Keep rating within bounds
+        return Math.max(1.0, Math.min(5.0, rating)).toFixed(1);
+      };
+      
       // Generate the full city object with all required data
       return {
         id: nextId++,
         name: city.name,
         state: city.state,
         region: city.region || "Unknown",
-        lat: city.lat || 0,
-        lng: city.lng || 0,
+        lat: city.lat.toString(), // Convert to string
+        lng: city.lng.toString(), // Convert to string
         population: city.population || 0,
+        medianAge: Math.floor(Math.random() * 10 + 35).toString(), // Generate a median age string between 35-45
         medianIncome: city.medianIncome || 0,
-        costOfLivingIndex: city.costOfLivingIndex || 100,
+        costOfLiving: city.costOfLivingIndex.toString(), // Convert to string
         averageCommute: city.averageCommute || 25,
+        climate: getClimate(city.region, city.state),
+        cbpFacilities: Math.floor(Math.random() * 3), // Random 0-2 CBP facilities
+        rating: calculateRating(city),
         housingData: {
           ...enhancedCityData[0].housingData,
           medianHomePrice,
@@ -188,7 +231,7 @@ async function addMoreCities() {
         },
         weatherData: enhancedCityData[0].weatherData,
         externalData: enhancedCityData[0].externalData,
-        createdAt: new Date().toISOString()
+        createdAt: new Date()
       };
     });
     
@@ -228,18 +271,11 @@ async function addMoreCities() {
   } catch (error) {
     console.error('Error in addMoreCities:', error);
   } finally {
-    // Close PostgreSQL connection if needed
-    if (!process.env.USE_DYNAMO_DB) {
-      await pool.end();
-    }
+    // Don't close the pool here, it will be managed by the server
   }
 }
 
-// Execute the function if this script is run directly
-if (require.main === module) {
-  addMoreCities()
-    .then(() => console.log('Complete!'))
-    .catch(console.error);
-}
+// In ES modules, we don't have a direct equivalent for require.main === module
+// Instead, we'll just export the function for use in other modules
 
 export { addMoreCities };

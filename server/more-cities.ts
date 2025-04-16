@@ -1,10 +1,27 @@
-import { Location } from "@shared/schema";
+/**
+ * City data interface for adding more cities
+ * Matches the fields we want to extract from the raw data
+ */
+export interface CityData {
+  name: string;
+  state: string;
+  region: string;
+  lat: number;
+  lng: number;
+  population: number;
+  medianIncome: number;
+  medianHomePrice: number;
+  costOfLivingIndex: number;
+  crimeRate: string;
+  transitScore: number;
+  averageCommute: number;
+}
 
 /**
  * 50 additional cities for the CBP Relocation Platform
  * Data includes a mix of locations across all regions of the United States
  */
-export const moreCities: Partial<Location>[] = [
+export const moreCities: CityData[] = [
   // Northeast Region
   {
     name: "Providence",

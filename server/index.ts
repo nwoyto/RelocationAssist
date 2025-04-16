@@ -3,6 +3,11 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { seedDatabase } from "./seed";
 import { addCitiesToDatabase } from "./add-cities";
+import { addMoreCities } from "./add-more-cities";
+import { createTablesIfNotExist } from "./dynamodb";
+
+// Check if we should use DynamoDB instead of PostgreSQL
+const useDynamoDB = process.env.USE_DYNAMO_DB === 'true';
 
 const app = express();
 app.use(express.json());
@@ -39,11 +44,20 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Initialize DynamoDB tables if using DynamoDB
+  if (useDynamoDB) {
+    console.log("Setting up DynamoDB tables...");
+    await createTablesIfNotExist();
+  }
+  
   // Seed the database with initial data
   await seedDatabase();
   
   // Add additional cities to the database
   await addCitiesToDatabase();
+  
+  // Add 50 more cities to the database
+  await addMoreCities();
   
   const server = await registerRoutes(app);
 
