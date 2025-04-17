@@ -10,6 +10,8 @@ import RentcastMarketTrends from "@/components/RentcastMarketTrends";
 import RentcastPriceHistory from "@/components/RentcastPriceHistory";
 import ClimateDataDisplay from "@/components/ClimateDataDisplay";
 import ExpandedCensusDataDisplay from "@/components/ExpandedCensusDataDisplay";
+import AICommunityInsights from "@/components/AICommunityInsights";
+import AIChatbot from "@/components/AIChatbot";
 import LocationMap from "@/components/LocationMap";
 import '@/components/LocationMap.css';
 import { Location } from "@/lib/types";
@@ -262,6 +264,16 @@ const LocationDetail = () => {
                       }`}
                     >
                       <span className="material-icons text-sm align-text-top mr-1">people</span> Census Data
+                    </button>
+                    <button 
+                      onClick={() => setActiveTab('ai')} 
+                      className={`px-4 py-3 font-medium whitespace-nowrap ${
+                        activeTab === 'ai' 
+                          ? 'border-b-2 border-[#005ea2] text-[#005ea2]' 
+                          : 'text-neutral-500'
+                      }`}
+                    >
+                      <span className="material-icons text-sm align-text-top mr-1">smart_toy</span> AI Insights
                     </button>
                   </div>
                   
