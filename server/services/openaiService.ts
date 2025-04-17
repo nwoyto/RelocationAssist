@@ -231,3 +231,110 @@ Format your response in HTML with appropriate tags for readability.
     return "I'm sorry, I'm having trouble processing your question right now. Please try again later.";
   }
 }
+
+/**
+ * Generate a comprehensive city summary for a specific location
+ * This provides a more detailed overview than the community insights
+ * @param location The location to generate a summary for
+ * @returns A detailed summary of the city including key relocation factors
+ */
+export async function generateCitySummary(location: LocationWithDetails): Promise<string> {
+  try {
+    // Initialize OpenAI client
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+
+    // Type cast to access optional fields
+    const housingData = location.housingData as HousingData || {};
+    const safetyData = location.safetyData as SafetyData || {};
+    const schoolData = location.schoolData as SchoolData || {};
+    const lifestyleData = location.lifestyleData as LifestyleData || {};
+    const transportationData = location.transportationData as TransportationData || {};
+
+    // Create the prompt
+    const prompt = `Please generate a comprehensive summary of ${location.name}, ${location.state} for CBP employees considering relocation. 
+    
+Key City Information:
+- Name: ${location.name}
+- State: ${location.state}
+- Region: ${location.region}
+- Population: ${location.population.toLocaleString()}
+- Median Age: ${location.medianAge}
+- Median Income: $${location.medianIncome.toLocaleString()}
+- Cost of Living: ${location.costOfLiving}% (100 is national average)
+- Climate: ${location.climate}
+- Average Commute: ${location.averageCommute} minutes
+
+Housing Information:
+- Median Home Price: $${housingData.medianHomePrice?.toLocaleString() || 'Data not available'}
+- Median Rent: $${housingData.medianRent?.toLocaleString() || 'Data not available'}/month
+- Homeownership Rate: ${housingData.homeownershipRate || 'Data not available'}%
+- Price-to-Income Ratio: ${housingData.priceToIncomeRatio || 'Data not available'}
+
+Safety Information:
+- Crime Index: ${safetyData.crimeIndex || 'Data not available'} (lower is better)
+- Crime Trend: ${safetyData.crimeTrend || 'Data not available'}
+- Safety Rating: ${safetyData.safetyRating || 'Data not available'}
+
+Education:
+- School Rating: ${schoolData.rating || 'Data not available'}/5
+- Public Schools: ${schoolData.publicSchools || 'Data not available'}
+- Private Schools: ${schoolData.privateSchools || 'Data not available'}
+- Student-Teacher Ratio: ${schoolData.studentTeacherRatio || 'Data not available'}:1
+
+Lifestyle:
+- Restaurants: ${lifestyleData.restaurants || 'Data not available'}
+- Entertainment Venues: ${lifestyleData.entertainment || 'Data not available'}
+- Parks: ${lifestyleData.parks || 'Data not available'}
+- Shopping Centers: ${lifestyleData.shopping || 'Data not available'}
+- Nightlife: ${lifestyleData.nightlife || 'Data not available'}
+- Arts & Culture: ${lifestyleData.artsAndCulture || 'Data not available'}
+- Outdoor Activities: ${lifestyleData.outdoorActivities || 'Data not available'}
+- Walk Score: ${lifestyleData.walkScore || 'Data not available'}/100
+
+Transportation:
+- Transit Score: ${transportationData.transitScore || 'Data not available'}/100
+- Bike Score: ${transportationData.bikeScore || 'Data not available'}/100
+- Major Airports: ${transportationData.majorAirports || 'Data not available'}
+- Public Transit: ${transportationData.hasPublicTransit ? "Available" : "Limited/Unknown"}
+- Interstate Access: ${transportationData.interstateAccess ? "Yes" : "No/Unknown"}
+
+CBP Facilities:
+- Number of CBP Facilities: ${location.cbpFacilities}
+
+Create a comprehensive and informative summary that includes:
+1. A general overview of the city's character, history, and notable features
+2. Quality of life assessments for CBP employees and their families
+3. Housing market analysis with trends and neighborhood recommendations
+4. Community highlights including culture, recreation, and amenities
+5. Evaluation of schools and educational opportunities
+6. Transportation and commuting information
+7. Safety assessment
+8. Pros and cons of living in this location for CBP employees
+9. Conclusion with key takeaways
+
+Format the summary in clear paragraphs with informative headings. Aim for about 800-1000 words total.
+`;
+
+    // Call OpenAI API to generate the summary
+    const response = await openai.chat.completions.create({
+      model: MODEL,
+      messages: [
+        { 
+          role: "system", 
+          content: "You are a relocation specialist with deep knowledge of cities across the United States. Your task is to create comprehensive, accurate, and helpful city summaries for CBP employees considering relocation."
+        },
+        { role: "user", content: prompt }
+      ],
+      temperature: 0.7,
+      max_tokens: 1200
+    });
+
+    // Return the generated summary
+    return response.choices[0].message.content || "City summary not available at this time.";
+  } catch (error) {
+    console.error("Error generating city summary:", error);
+    return "We're unable to generate a city summary at this time. Please try again later.";
+  }
+}

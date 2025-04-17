@@ -5,7 +5,7 @@ import { enrichLocationData } from "./services/dataService";
 import * as rentcastService from "./services/rentcastService";
 import * as censusService from "./services/censusService";
 import * as climateService from "./services/climateService";
-import { generateCommunitySummary, processLocationQuery } from "./services/openaiService";
+import { generateCommunitySummary, processLocationQuery, generateCitySummary } from "./services/openaiService";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // API Routes for locations
@@ -381,6 +381,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error processing AI chat query:", error);
       res.status(500).json({ error: "Failed to process query" });
+    }
+  });
+  
+  // AI-generated City Summary
+  app.post("/api/ai/summary", async (req, res) => {
+    try {
+      const { locationId } = req.body;
+      
+      if (!locationId) {
+        return res.status(400).json({ error: "Location ID is required" });
+      }
+      
+      // Get location data
+      const location = await storage.getLocationById(locationId);
+      
+      if (!location) {
+        return res.status(404).json({ error: "Location not found" });
+      }
+      
+      // Enrich location with additional data if possible
+      let enrichedLocation = location;
+      try {
+        enrichedLocation = await enrichLocationData(location);
+      } catch (enrichError) {
+        console.warn("Warning: Could not enrich location data for summary:", enrichError);
+        // Continue with base location data
+      }
+      
+      // Generate the city summary
+      const summary = await generateCitySummary(enrichedLocation as any);
+      res.json({ summary });
+    } catch (error) {
+      console.error("Error generating city summary:", error);
+      res.status(500).json({ error: "Failed to generate city summary" });
     }
   });
 
