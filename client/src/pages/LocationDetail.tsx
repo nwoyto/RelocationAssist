@@ -13,6 +13,7 @@ import ExpandedCensusDataDisplay from "@/components/ExpandedCensusDataDisplay";
 import AICommunityInsights from "@/components/AICommunityInsights";
 import AIChatbot from "@/components/AIChatbot";
 import LocationMap from "@/components/LocationMap";
+import axios from "axios";
 import '@/components/LocationMap.css';
 import { Location } from "@/lib/types";
 import { getLocationImageUrl, getNeighborhoodImageUrl, getListingImageUrl } from "@/lib/utils";
@@ -22,6 +23,8 @@ const LocationDetail = () => {
   const [activeTab, setActiveTab] = useState('housing');
   const [match, params] = useRoute('/location/:id');
   const [, navigate] = useLocation();
+  const [generatingSummary, setGeneratingSummary] = useState(false);
+  const [citySummary, setCitySummary] = useState<string | null>(null);
   
   const { 
     getLocationById, 
@@ -29,6 +32,25 @@ const LocationDetail = () => {
     removeFromCompare, 
     isInCompare 
   } = useLocations();
+  
+  // Function to generate a city summary using the OpenAI API
+  const generateCitySummary = async (location: Location) => {
+    if (generatingSummary) return;
+    
+    setGeneratingSummary(true);
+    try {
+      const response = await axios.post('/api/ai/summary', {
+        locationId: location.id
+      });
+      
+      setCitySummary(response.data.summary);
+    } catch (error) {
+      console.error('Error generating city summary:', error);
+      setCitySummary('Unable to generate summary at this time. Please try again later.');
+    } finally {
+      setGeneratingSummary(false);
+    }
+  };
   
   const id = params?.id ? parseInt(params.id) : 0;
   
@@ -86,7 +108,7 @@ const LocationDetail = () => {
                   </div>
                   <p className="text-neutral-500">{location.region} • CBP Field Operations</p>
                 </div>
-                <div className="flex space-x-2 mt-4 md:mt-0">
+                <div className="flex flex-wrap gap-2 mt-4 md:mt-0">
                   <button className="flex items-center py-2 px-4 border border-neutral-200 hover:border-neutral-300 rounded transition-colors">
                     <span className="material-icons text-sm mr-1">bookmark_border</span>
                     Save
@@ -110,8 +132,50 @@ const LocationDetail = () => {
                       {isInCompare(location.id) ? 'Added to Compare' : 'Add to Compare'}
                     </span>
                   </button>
+                  <button 
+                    onClick={() => generateCitySummary(location)}
+                    disabled={generatingSummary}
+                    className="flex items-center py-2 px-4 bg-[#005ea2] hover:bg-[#00477b] text-white rounded transition-colors"
+                  >
+                    {generatingSummary ? (
+                      <>
+                        <span className="material-icons animate-spin text-sm mr-1">autorenew</span>
+                        <span>Generating...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="material-icons text-sm mr-1">summarize</span>
+                        <span>Generate Summary</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
+              
+              {/* City Summary (when available) */}
+              {citySummary && (
+                <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+                  <div className="p-4 border-b border-neutral-100 flex justify-between items-center">
+                    <div className="flex items-center">
+                      <span className="material-icons text-[#005ea2] mr-2">summarize</span>
+                      <h3 className="font-['Public_Sans'] font-semibold">AI-Generated City Summary</h3>
+                    </div>
+                    <button 
+                      onClick={() => setCitySummary(null)}
+                      className="text-neutral-500 hover:text-neutral-700"
+                    >
+                      <span className="material-icons">close</span>
+                    </button>
+                  </div>
+                  <div className="p-5">
+                    <div className="prose max-w-none">
+                      {citySummary.split('\n').map((paragraph, index) => (
+                        <p key={index}>{paragraph}</p>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
               
               {/* Location Overview */}
               <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
