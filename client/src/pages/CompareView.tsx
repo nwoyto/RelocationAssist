@@ -4,6 +4,7 @@ import { useLocations } from "@/hooks/useLocations";
 import { useQuery } from "@tanstack/react-query";
 import StarRating from "@/components/StarRating";
 import ExternalDataDisplay from "@/components/ExternalDataDisplay";
+import AIChatbot from "@/components/AIChatbot";
 import { Database } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Location } from "@/lib/types";

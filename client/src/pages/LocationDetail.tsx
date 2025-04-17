@@ -862,6 +862,29 @@ const LocationDetail = () => {
                   </div>
                 </div>
               )}
+
+              {/* AI Insights Tab */}
+              {activeTab === 'ai' && (
+                <div className="mb-6">
+                  <div className="flex flex-col gap-6">
+                    <div className="w-full">
+                      <h3 className="font-['Public_Sans'] text-lg font-semibold mb-4">AI-Powered Insights & Assistant</h3>
+                      <p className="text-neutral-500 mb-6">
+                        Explore AI-generated insights about {location.name}, {location.state} and chat with our relocation assistant for personalized recommendations.
+                      </p>
+                      
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                          <AICommunityInsights locationId={location.id} locationName={`${location.name}, ${location.state}`} />
+                        </div>
+                        <div>
+                          <AIChatbot compareLocations={[location]} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
               
               {/* Related Resources */}
               <div className="bg-white rounded-lg shadow-md p-6">
