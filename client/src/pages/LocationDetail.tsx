@@ -878,7 +878,7 @@ const LocationDetail = () => {
                           <AICommunityInsights locationId={location.id} locationName={`${location.name}, ${location.state}`} />
                         </div>
                         <div>
-                          <AIChatbot compareLocations={[location]} />
+                          <AIChatbot />
                         </div>
                       </div>
                     </div>

@@ -441,18 +441,6 @@ const CompareView = () => {
               <span className="font-medium uppercase text-sm tracking-wide">Share</span>
             </button>
           </div>
-          
-          {/* AI-Powered Assistant */}
-          <div className="mt-10 mb-8 bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <div className="flex items-center mb-4">
-              <span className="material-icons text-[#0284c7] mr-2">smart_toy</span>
-              <h3 className="text-xl font-semibold">AI-Powered Comparison Assistant</h3>
-            </div>
-            <p className="text-neutral-500 mb-6">
-              Ask questions about the locations you're comparing and get AI-powered insights to help with your relocation decision.
-            </p>
-            <AIChatbot compareLocations={locationArray} />
-          </div>
         </div>
       </div>
     </div>
