@@ -451,7 +451,7 @@ const CompareView = () => {
             <p className="text-neutral-500 mb-6">
               Ask questions about the locations you're comparing and get AI-powered insights to help with your relocation decision.
             </p>
-            <AIChatbot compareLocations={locationArray} />
+            <AIChatbot />
           </div>
         </div>
       </div>
