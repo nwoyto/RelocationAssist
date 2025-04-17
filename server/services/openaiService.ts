@@ -68,56 +68,63 @@ const openai = new OpenAI({
  * @param location The location data
  * @returns A detailed community summary
  */
-export async function generateCommunitySummary(location: Location): Promise<string> {
+export async function generateCommunitySummary(location: Location & Partial<LocationWithDetails>): Promise<string> {
   try {
+    // Extract data safely with fallbacks for missing properties
+    const housingData = location.housingData || {} as HousingData;
+    const safetyData = location.safetyData || {} as SafetyData;
+    const schoolData = location.schoolData || {} as SchoolData;
+    const lifestyleData = location.lifestyleData || {} as LifestyleData;
+    const transportationData = location.transportationData || {} as TransportationData;
+
     // Create a detailed prompt based on the location data
     const prompt = `
 Generate a detailed and engaging community summary for ${location.name}, ${location.state}.
 Use the following information about the city to create an informative overview:
 
 City Information:
-- Population: ${location.population}
-- Region: ${location.region}
-- Climate: ${location.climate}
-- Median Income: $${location.medianIncome}
-- Cost of Living: ${location.costOfLiving} (100 is national average)
-- Average Commute: ${location.averageCommute} minutes
-- Median Age: ${location.medianAge}
-- City Rating: ${location.rating}/5
+- Population: ${location.population || 'Data not available'}
+- Region: ${location.region || 'Data not available'}
+- Climate: ${location.climate || 'Data not available'}
+- Median Income: $${location.medianIncome || 'Data not available'}
+- Cost of Living: ${location.costOfLiving || 'Data not available'} (100 is national average)
+- Average Commute: ${location.averageCommute || 'Data not available'} minutes
+- Median Age: ${location.medianAge || 'Data not available'}
+- City Rating: ${location.rating || 'Data not available'}/5
 
 Housing Information:
-- Median Home Price: $${location.housingData.medianHomePrice}
-- Median Rent: $${location.housingData.medianRent}
-- Homeownership Rate: ${location.housingData.homeownershipRate}%
-- Price to Income Ratio: ${location.housingData.priceToIncomeRatio}
+- Median Home Price: $${housingData.medianHomePrice || 'Data not available'}
+- Median Rent: $${housingData.medianRent || 'Data not available'}
+- Homeownership Rate: ${housingData.homeownershipRate || 'Data not available'}%
+- Price to Income Ratio: ${housingData.priceToIncomeRatio || 'Data not available'}
 
 Safety Information:
-- Crime Index: ${location.safetyData.crimeIndex} (lower is better)
-- Crime Trend: ${location.safetyData.crimeTrend}
-- Safety Rating: ${location.safetyData.safetyRating}
+- Crime Index: ${safetyData.crimeIndex || 'Data not available'} (lower is better)
+- Crime Trend: ${safetyData.crimeTrend || 'Data not available'}
+- Safety Rating: ${safetyData.safetyRating || 'Data not available'}
 
 Education:
-- School Rating: ${location.schoolData.rating}/5
-- Public Schools: ${location.schoolData.publicSchools}
-- Private Schools: ${location.schoolData.privateSchools}
-- Student-Teacher Ratio: ${location.schoolData.studentTeacherRatio}:1
+- School Rating: ${schoolData.rating || 'Data not available'}/5
+- Public Schools: ${schoolData.publicSchools || 'Data not available'}
+- Private Schools: ${schoolData.privateSchools || 'Data not available'}
+- Student-Teacher Ratio: ${schoolData.studentTeacherRatio || 'Data not available'}:1
 
 Lifestyle:
-- Restaurants: ${location.lifestyleData.restaurants}
-- Entertainment Venues: ${location.lifestyleData.entertainment}
-- Parks: ${location.lifestyleData.parks}
-- Shopping Centers: ${location.lifestyleData.shopping}
-- Nightlife: ${location.lifestyleData.nightlife}
-- Arts & Culture: ${location.lifestyleData.artsAndCulture}
-- Outdoor Activities: ${location.lifestyleData.outdoorActivities}
-- Walk Score: ${location.lifestyleData.walkScore}/100
+- Restaurants: ${lifestyleData.restaurants || 'Data not available'}
+- Entertainment Venues: ${lifestyleData.entertainment || 'Data not available'}
+- Parks: ${lifestyleData.parks || 'Data not available'}
+- Shopping Centers: ${lifestyleData.shopping || 'Data not available'}
+- Nightlife: ${lifestyleData.nightlife || 'Data not available'}
+- Arts & Culture: ${lifestyleData.artsAndCulture || 'Data not available'}
+- Outdoor Activities: ${lifestyleData.outdoorActivities || 'Data not available'}
+- Walk Score: ${lifestyleData.walkScore || 'Data not available'}/100
 
 Transportation:
-- Transit Score: ${location.transportationData.transitScore}/100
-- Bike Score: ${location.transportationData.bikeScore}/100
-- Major Airports: ${location.transportationData.majorAirports}
-- Public Transit: ${location.transportationData.hasPublicTransit ? "Available" : "Limited"}
-- Interstate Access: ${location.transportationData.interstateAccess ? "Yes" : "No"}
+- Transit Score: ${transportationData.transitScore || 'Data not available'}/100
+- Bike Score: ${transportationData.bikeScore || 'Data not available'}/100
+- Major Airports: ${transportationData.majorAirports || 'Data not available'}
+- Public Transit: ${transportationData.hasPublicTransit ? "Available" : "Limited/Unknown"}
+- Interstate Access: ${transportationData.interstateAccess ? "Yes" : "No/Unknown"}
 
 Format the response in HTML with appropriate <h2>, <p>, and <ul> tags as needed. 
 Make the summary engaging and informative for CBP employees considering relocation to this area.
@@ -159,24 +166,32 @@ export async function processLocationQuery(
   try {
     // Create context based on available locations
     const locationContext = locations.map(loc => 
-      `${loc.name}, ${loc.state}: Population ${loc.population}, Region: ${loc.region}`
+      `${loc.name}, ${loc.state}: Population ${loc.population || 'Unknown'}, Region: ${loc.region || 'Unknown'}`
     ).join("\n");
 
     // Additional context if comparison is requested
     let comparisonContext = "";
     if (compareLocations && compareLocations.length > 0) {
       comparisonContext = "\nDetailed comparison data for:\n" + 
-        compareLocations.map(loc => `
+        compareLocations.map(loc => {
+          // Extract data safely with fallbacks for missing properties
+          const housingData = (loc as any).housingData || {};
+          const safetyData = (loc as any).safetyData || {};
+          const transportationData = (loc as any).transportationData || {};
+          const schoolData = (loc as any).schoolData || {};
+          
+          return `
 - ${loc.name}, ${loc.state}:
-  Population: ${loc.population}
-  Median Income: $${loc.medianIncome}
-  Cost of Living: ${loc.costOfLiving} (national avg: 100)
-  Median Home Price: $${loc.housingData.medianHomePrice}
-  Crime Index: ${loc.safetyData.crimeIndex}
-  Climate: ${loc.climate}
-  Transit Score: ${loc.transportationData.transitScore}
-  School Rating: ${loc.schoolData.rating}/5
-      `).join("\n");
+  Population: ${loc.population || 'Data not available'}
+  Median Income: $${loc.medianIncome || 'Data not available'}
+  Cost of Living: ${loc.costOfLiving || 'Data not available'} (national avg: 100)
+  Median Home Price: $${housingData.medianHomePrice || 'Data not available'}
+  Crime Index: ${safetyData.crimeIndex || 'Data not available'}
+  Climate: ${loc.climate || 'Data not available'}
+  Transit Score: ${transportationData.transitScore || 'Data not available'}
+  School Rating: ${schoolData.rating || 'Data not available'}/5
+          `;
+        }).join("\n");
     }
 
     // Build a prompt that includes context about available locations and comparison data

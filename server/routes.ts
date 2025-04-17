@@ -348,7 +348,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Generate AI-powered community summary
-      const summary = await generateCommunitySummary(location);
+      // Cast the location to include optional detailed fields that might be present
+      const summary = await generateCommunitySummary(location as any);
       res.json({ summary });
     } catch (error) {
       console.error("Error generating community summary:", error);
