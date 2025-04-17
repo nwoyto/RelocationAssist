@@ -4,6 +4,7 @@ import Sidebar from "@/components/Sidebar";
 import { useLocations } from "@/hooks/useLocations";
 import StarRating from "@/components/StarRating";
 import LocationMap from "@/components/LocationMap";
+import AIChatbot from "@/components/AIChatbot";
 import "@/components/LocationMap.css";
 
 const Dashboard = () => {
@@ -211,6 +212,34 @@ const Dashboard = () => {
                         <span className="material-icons text-sm align-text-bottom mr-1">map</span>
                         Open Interactive Map
                       </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* AI-Powered Assistant */}
+              <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+                <div className="p-4 border-b border-neutral-100">
+                  <div className="flex items-center">
+                    <span className="material-icons text-[#005ea2] mr-2">smart_toy</span>
+                    <h3 className="font-['Public_Sans'] font-semibold">AI-Powered Relocation Assistant</h3>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                      <h4 className="font-medium text-lg mb-3">Get Personalized Insights</h4>
+                      <p className="text-neutral-600 mb-4">
+                        Our AI assistant can help answer your questions about CBP locations, relocation factors, and more. Ask about housing costs, schools, climate, or any other aspects of potential relocation destinations.
+                      </p>
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        <span className="text-sm bg-neutral-100 px-3 py-1 rounded-full">"Compare El Paso and San Diego"</span>
+                        <span className="text-sm bg-neutral-100 px-3 py-1 rounded-full">"Best schools in Tucson?"</span>
+                        <span className="text-sm bg-neutral-100 px-3 py-1 rounded-full">"Housing market in Buffalo"</span>
+                      </div>
+                    </div>
+                    <div>
+                      <AIChatbot />
                     </div>
                   </div>
                 </div>
