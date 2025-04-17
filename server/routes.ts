@@ -5,6 +5,7 @@ import { enrichLocationData } from "./services/dataService";
 import * as rentcastService from "./services/rentcastService";
 import * as censusService from "./services/censusService";
 import * as climateService from "./services/climateService";
+import { generateCommunitySummary, processLocationQuery } from "./services/openaiService";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // API Routes for locations
@@ -333,6 +334,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching climate data:", error);
       res.status(500).json({ error: "Failed to fetch climate data" });
+    }
+  });
+
+  // AI-powered Community Summary Routes
+  app.get("/api/ai/community-summary/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const location = await storage.getLocationById(id);
+      
+      if (!location) {
+        return res.status(404).json({ error: "Location not found" });
+      }
+      
+      // Generate AI-powered community summary
+      const summary = await generateCommunitySummary(location);
+      res.json({ summary });
+    } catch (error) {
+      console.error("Error generating community summary:", error);
+      res.status(500).json({ error: "Failed to generate community summary" });
+    }
+  });
+
+  // AI Chatbot for location questions
+  app.post("/api/ai/chat", async (req, res) => {
+    try {
+      const { query, locationIds } = req.body;
+      
+      if (!query) {
+        return res.status(400).json({ error: "Query is required" });
+      }
+      
+      // Get all locations for context
+      const allLocations = await storage.getLocations();
+      
+      // Get specific locations for comparison if provided
+      let compareLocations: any[] = [];
+      if (locationIds && locationIds.length > 0) {
+        compareLocations = await storage.getLocationsByIds(locationIds);
+      }
+      
+      // Process the query with AI
+      const response = await processLocationQuery(query, allLocations, compareLocations);
+      res.json({ response });
+    } catch (error) {
+      console.error("Error processing AI chat query:", error);
+      res.status(500).json({ error: "Failed to process query" });
     }
   });
 
