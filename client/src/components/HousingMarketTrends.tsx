@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
-import { Database } from 'lucide-react';
+import { Database, AlertCircle } from 'lucide-react';
 
 interface HousingMarketTrendsProps {
   city: string;
@@ -61,20 +61,30 @@ export default function HousingMarketTrends({ city, state }: HousingMarketTrends
       
       try {
         // Try Rentcast API first
-        const rentcastResponse = await axios.get(`/api/rentcast/market-trends?city=${city}&state=${state}`);
-        if (rentcastResponse.data && Object.keys(rentcastResponse.data).length > 0) {
-          setRentcastData(rentcastResponse.data);
-          setDataSource('rentcast');
-          setLoading(false);
-          return;
+        try {
+          const rentcastResponse = await axios.get(`/api/rentcast/market-trends?city=${city}&state=${state}`);
+          if (rentcastResponse.data && Object.keys(rentcastResponse.data).length > 0) {
+            setRentcastData(rentcastResponse.data);
+            setDataSource('rentcast');
+            setLoading(false);
+            return;
+          }
+        } catch (rentcastError) {
+          console.log('Rentcast data not available, falling back to Census data');
         }
         
         // If Rentcast doesn't have data, fallback to Census data
-        const censusResponse = await axios.get(`/api/census/housing?city=${city}&state=${state}`);
-        if (censusResponse.data) {
-          setCensusData(censusResponse.data);
-          setDataSource('census');
-        } else {
+        try {
+          const censusResponse = await axios.get(`/api/census/housing?city=${city}&state=${state}`);
+          if (censusResponse.data) {
+            setCensusData(censusResponse.data);
+            setDataSource('census');
+          } else {
+            setDataSource('none');
+            setError('No market data available for this location');
+          }
+        } catch (censusError) {
+          console.error('Census API error:', censusError);
           setDataSource('none');
           setError('No market data available for this location');
         }
@@ -116,24 +126,32 @@ export default function HousingMarketTrends({ city, state }: HousingMarketTrends
     return (
       <Card className="p-6">
         <div className="text-center p-6">
-          <h3 className="text-xl font-semibold mb-2">No market data available</h3>
-          <p className="text-neutral-500 mb-4">
-            We don't have market trend data for {city}, {state} at this time. Please check back later.
-          </p>
-          <div className="text-sm text-neutral-400">
-            <h4 className="font-medium mb-2">Alternative Data Sources:</h4>
-            <ul className="list-disc list-inside">
-              <li>Census Bureau Housing Data</li>
-              <li>HUD Market Reports</li>
-              <li>Local MLS Listings</li>
-            </ul>
+          <div className="flex justify-center mb-4">
+            <Database className="h-10 w-10 text-neutral-300" />
           </div>
-          <div className="mt-4 text-sm text-neutral-400">
-            <p>Coming Soon:</p>
-            <p className="text-xs">
-              We're expanding our data sources to provide comprehensive real estate market information. 
-              Check back for updates.
-            </p>
+          <h3 className="text-xl font-semibold mb-2">Housing Market Data Temporarily Unavailable</h3>
+          <p className="text-neutral-500 mb-4">
+            We're experiencing issues retrieving housing market data for {city}, {state}.
+          </p>
+          <div className="bg-yellow-50 border border-yellow-100 rounded-md p-4 mb-4 max-w-md mx-auto text-left">
+            <div className="flex items-start">
+              <AlertCircle className="h-5 w-5 text-yellow-600 mr-2 mt-0.5" />
+              <div>
+                <h4 className="font-semibold text-yellow-800 text-sm">Data Source Connection Issue</h4>
+                <p className="text-sm text-yellow-700 mt-1">
+                  We're currently having trouble connecting to our data sources (Rentcast API and Census Bureau). 
+                  Our team has been notified and is working to restore access.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="mt-6 text-sm text-neutral-600">
+            <p className="font-medium">Try one of these alternatives:</p>
+            <ul className="list-disc list-inside mt-2 text-neutral-500 text-left max-w-md mx-auto">
+              <li>Check the "Housing Market Overview" section above for basic data</li>
+              <li>View the "Official Housing Data" from the Census Bureau in the sidebar</li>
+              <li>Explore the AI Insights tab for qualitative housing information</li>
+            </ul>
           </div>
         </div>
       </Card>
