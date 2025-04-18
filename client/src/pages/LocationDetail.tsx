@@ -6,8 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 import StarRating from "@/components/StarRating";
 import ExternalDataDisplay from "@/components/ExternalDataDisplay";
 import RentcastPropertyListings from "@/components/RentcastPropertyListings";
-import RentcastMarketTrends from "@/components/RentcastMarketTrends";
 import RentcastPriceHistory from "@/components/RentcastPriceHistory";
+import HousingMarketTrends from "@/components/HousingMarketTrends";
 import ClimateDataDisplay from "@/components/ClimateDataDisplay";
 import ExpandedCensusDataDisplay from "@/components/ExpandedCensusDataDisplay";
 import AICommunityInsights from "@/components/AICommunityInsights";
@@ -371,8 +371,8 @@ const LocationDetail = () => {
                           <div className="mb-6">
                             <h4 className="font-medium mb-3">Housing Market Trends</h4>
                             
-                            {/* Rentcast Market Trends Component */}
-                            <RentcastMarketTrends
+                            {/* Housing Market Trends Component with data.gov fallback */}
+                            <HousingMarketTrends
                               city={location.name}
                               state={location.state}
                             />
