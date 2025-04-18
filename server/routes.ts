@@ -5,6 +5,7 @@ import { enrichLocationData } from "./services/dataService";
 import * as rentcastService from "./services/rentcastService";
 import * as censusService from "./services/censusService";
 import * as climateService from "./services/climateService";
+import * as dataGovService from "./services/dataGovService";
 import { generateCommunitySummary, processLocationQuery, generateCitySummary } from "./services/openaiService";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -257,13 +258,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "City and state are required" });
       }
       
-      const housingData = await censusService.getExpandedHousingData(city, state);
-      
-      if (!housingData) {
-        return res.status(404).json({ error: "Housing data not found for this location" });
+      // Try the Census Bureau API first
+      try {
+        console.log(`Fetching Census housing data for ${state}, ${city}`);
+        const housingData = await censusService.getExpandedHousingData(city, state);
+        
+        if (housingData) {
+          return res.json(housingData);
+        }
+      } catch (censusError) {
+        console.log("Census API error, falling back to data.gov:", censusError);
       }
       
-      res.json(housingData);
+      // If Census API fails, fall back to data.gov
+      try {
+        console.log(`Fetching data.gov housing data for ${state}, ${city}`);
+        const dataGovHousingData = await dataGovService.getHousingData(city, state);
+        
+        if (dataGovHousingData) {
+          return res.json(dataGovHousingData);
+        }
+      } catch (dataGovError) {
+        console.log("data.gov API error:", dataGovError);
+      }
+      
+      // If all APIs fail, use fallback regional data
+      const fallbackData = dataGovService.getFallbackHousingData(state, city);
+      return res.json(fallbackData);
     } catch (error) {
       console.error("Error fetching housing data:", error);
       res.status(500).json({ error: "Failed to fetch housing data" });
@@ -314,6 +335,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Data.gov API Routes
+  app.get("/api/datagov/housing", async (req, res) => {
+    try {
+      const city = req.query.city as string;
+      const state = req.query.state as string;
+      
+      if (!city || !state) {
+        return res.status(400).json({ error: "City and state are required" });
+      }
+      
+      console.log(`Fetching data.gov housing data for ${state}, ${city}`);
+      const housingData = await dataGovService.getHousingData(city, state);
+      
+      if (!housingData) {
+        // If no data from API, use regional fallback data
+        const fallbackData = dataGovService.getFallbackHousingData(state, city);
+        return res.json({
+          ...fallbackData,
+          source: "regional_patterns"
+        });
+      }
+      
+      res.json({
+        ...housingData,
+        source: "data.gov"
+      });
+    } catch (error) {
+      console.error("Error fetching data.gov housing data:", error);
+      
+      // If error occurs, return regional fallback data
+      const fallbackData = dataGovService.getFallbackHousingData(req.query.state as string, req.query.city as string);
+      res.json({
+        ...fallbackData,
+        source: "regional_patterns"
+      });
+    }
+  });
+  
   // Climate API Routes
   app.get("/api/climate", async (req, res) => {
     try {

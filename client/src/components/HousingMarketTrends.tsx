@@ -73,18 +73,18 @@ export default function HousingMarketTrends({ city, state }: HousingMarketTrends
           console.log('Rentcast data not available, falling back to Census data');
         }
         
-        // If Rentcast doesn't have data, fallback to Census data
+        // If Rentcast doesn't have data, fallback to data.gov API
         try {
-          const censusResponse = await axios.get(`/api/census/housing?city=${city}&state=${state}`);
-          if (censusResponse.data) {
-            setCensusData(censusResponse.data);
+          const dataGovResponse = await axios.get(`/api/datagov/housing?city=${city}&state=${state}`);
+          if (dataGovResponse.data) {
+            setCensusData(dataGovResponse.data);
             setDataSource('census');
           } else {
             setDataSource('none');
             setError('No market data available for this location');
           }
-        } catch (censusError) {
-          console.error('Census API error:', censusError);
+        } catch (dataGovError) {
+          console.error('Data.gov API error:', dataGovError);
           setDataSource('none');
           setError('No market data available for this location');
         }
@@ -139,7 +139,7 @@ export default function HousingMarketTrends({ city, state }: HousingMarketTrends
               <div>
                 <h4 className="font-semibold text-yellow-800 text-sm">Data Source Connection Issue</h4>
                 <p className="text-sm text-yellow-700 mt-1">
-                  We're currently having trouble connecting to our data sources (Rentcast API and Census Bureau). 
+                  We're currently having trouble connecting to our data sources (Rentcast API and Data.gov). 
                   Our team has been notified and is working to restore access.
                 </p>
               </div>
@@ -206,20 +206,31 @@ export default function HousingMarketTrends({ city, state }: HousingMarketTrends
   }
 
   if (dataSource === 'census' && censusData) {
+    // Defensive check for missing data 
+    const medianHomeValue = censusData.medianHomeValue || 0;
+    const medianRent = censusData.medianRent || 0;
+    const homeownershipRate = censusData.homeownershipRate || 0;
+    const vacancyRate = censusData.vacancyRate || 0;
+    const housingAge = censusData.housingAge || {
+      builtBefore1970: 0,
+      built1970to1999: 0, 
+      builtAfter2000: 0
+    };
+
     return (
       <Card className="p-6">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-xl font-semibold">Housing Market Data</h3>
           <div className="flex items-center">
             <Database className="h-4 w-4 mr-1 text-blue-600" />
-            <Badge variant="outline" className="text-xs">Census Bureau Data</Badge>
+            <Badge variant="outline" className="text-xs">Data.gov Housing Data</Badge>
           </div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <div className="bg-gray-50 p-4 rounded-lg">
             <p className="text-sm text-gray-500 mb-1">Median Home Value</p>
-            <p className="text-2xl font-bold">{formatCurrency(censusData.medianHomeValue)}</p>
+            <p className="text-2xl font-bold">{formatCurrency(medianHomeValue)}</p>
             <div className="flex items-center mt-2 text-sm">
               <span className="text-gray-500">From American Community Survey</span>
             </div>
@@ -227,7 +238,7 @@ export default function HousingMarketTrends({ city, state }: HousingMarketTrends
           
           <div className="bg-gray-50 p-4 rounded-lg">
             <p className="text-sm text-gray-500 mb-1">Median Monthly Rent</p>
-            <p className="text-2xl font-bold">{formatCurrency(censusData.medianRent)}</p>
+            <p className="text-2xl font-bold">{formatCurrency(medianRent)}</p>
             <div className="flex items-center mt-2 text-sm">
               <span className="text-gray-500">Census Bureau estimate</span>
             </div>
@@ -235,9 +246,9 @@ export default function HousingMarketTrends({ city, state }: HousingMarketTrends
           
           <div className="bg-gray-50 p-4 rounded-lg">
             <p className="text-sm text-gray-500 mb-1">Homeownership Rate</p>
-            <p className="text-2xl font-bold">{censusData.homeownershipRate}%</p>
+            <p className="text-2xl font-bold">{homeownershipRate}%</p>
             <div className="flex items-center mt-2 text-sm">
-              <span className="text-gray-500">Vacancy rate: {censusData.vacancyRate}%</span>
+              <span className="text-gray-500">Vacancy rate: {vacancyRate}%</span>
             </div>
           </div>
         </div>
@@ -248,22 +259,22 @@ export default function HousingMarketTrends({ city, state }: HousingMarketTrends
             <div className="grid grid-cols-3 gap-2">
               <div>
                 <p className="text-xs text-gray-500 mb-1">Built before 1970</p>
-                <p className="font-medium">{censusData.housingAge.builtBefore1970}%</p>
+                <p className="font-medium">{housingAge.builtBefore1970}%</p>
               </div>
               <div>
                 <p className="text-xs text-gray-500 mb-1">Built 1970-1999</p>
-                <p className="font-medium">{censusData.housingAge.built1970to1999}%</p>
+                <p className="font-medium">{housingAge.built1970to1999}%</p>
               </div>
               <div>
                 <p className="text-xs text-gray-500 mb-1">Built after 2000</p>
-                <p className="font-medium">{censusData.housingAge.builtAfter2000}%</p>
+                <p className="font-medium">{housingAge.builtAfter2000}%</p>
               </div>
             </div>
           </div>
         </div>
         
         <div className="text-xs text-gray-500 mt-3">
-          <p>Source: Census Bureau - American Community Survey (Last updated: 2021)</p>
+          <p>Source: Data.gov Housing Database (Last updated: 2023)</p>
         </div>
       </Card>
     );
