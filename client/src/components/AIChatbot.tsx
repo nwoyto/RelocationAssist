@@ -18,6 +18,17 @@ interface Message {
   timestamp: Date;
 }
 
+// Helper function to clean AI responses
+const cleanAIResponse = (text: string): string => {
+  // Remove ```html and ``` markers from the beginning and end
+  let cleaned = text.replace(/^```html\n|\n```$/g, '');
+  // Also remove ```html that might be without newlines
+  cleaned = cleaned.replace(/^```html/, '');
+  // Remove any DOCTYPE, html, body tags if present
+  cleaned = cleaned.replace(/<!DOCTYPE[^>]*>|<\/?html[^>]*>|<\/?body[^>]*>/g, '');
+  return cleaned.trim();
+};
+
 interface AIChatbotProps {
   compareLocations?: Location[];
 }
@@ -76,10 +87,10 @@ export default function AIChatbot({ compareLocations }: AIChatbotProps) {
         locationIds
       });
       
-      // Add AI response to chat
+      // Add AI response to chat - clean the response first
       const aiMessage: Message = {
         id: generateId(),
-        text: response.data.response,
+        text: cleanAIResponse(response.data.response),
         sender: "ai",
         timestamp: new Date()
       };
@@ -110,7 +121,7 @@ export default function AIChatbot({ compareLocations }: AIChatbotProps) {
   };
 
   return (
-    <Card className="w-full shadow-lg border-t-4 border-t-primary flex flex-col h-[600px]">
+    <Card className="w-full shadow-lg border-t-4 border-t-primary flex flex-col h-[600px] overflow-hidden">
       <CardHeader className="pb-3">
         <div className="flex items-center">
           <Avatar className="h-10 w-10 mr-2 bg-primary text-primary-foreground">
@@ -148,14 +159,14 @@ export default function AIChatbot({ compareLocations }: AIChatbotProps) {
                 }`}
               >
                 <div
-                  className={`max-w-[80%] rounded-lg p-3 ${
+                  className={`${message.sender === "user" ? "max-w-[80%]" : "max-w-[95%] overflow-x-auto"} rounded-lg p-3 ${
                     message.sender === "user"
                       ? "bg-primary text-primary-foreground"
                       : "bg-muted"
                   }`}
                 >
                   {message.sender === "ai" ? (
-                    <div className="prose prose-sm dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: message.text }} />
+                    <div className="prose prose-sm dark:prose-invert max-w-none prose-table:w-full prose-table:my-2 prose-table:overflow-x-auto" dangerouslySetInnerHTML={{ __html: message.text }} />
                   ) : (
                     <p className="text-sm">{message.text}</p>
                   )}
