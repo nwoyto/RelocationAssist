@@ -434,9 +434,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         compareLocations = await storage.getLocationsByIds(locationIds);
       }
       
-      // Process the query with AI
+      // Process the query with AI - now returns structured data with locations
       const response = await processLocationQuery(query, allLocations, compareLocations);
-      res.json({ response });
+      res.json({ 
+        response: response.html,
+        mentionedLocations: response.mentionedLocations 
+      });
     } catch (error) {
       console.error("Error processing AI chat query:", error);
       res.status(500).json({ error: "Failed to process query" });

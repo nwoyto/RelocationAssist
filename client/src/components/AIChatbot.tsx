@@ -4,18 +4,28 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Bot, Loader2 } from "lucide-react";
+import { Send, Bot, Loader2, MapPin, Plus, BookmarkPlus, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Location } from "@/lib/types";
+import { useLocation } from "wouter";
+import { useLocations } from "@/hooks/useLocations";
+import { Link } from "wouter";
+
+interface MentionedLocation {
+  name: string;
+  state: string;
+  id: number;
+}
 
 interface Message {
   id: string;
   text: string;
   sender: "user" | "ai";
   timestamp: Date;
+  mentionedLocations?: MentionedLocation[];
 }
 
 // Helper function to clean AI responses
@@ -46,6 +56,8 @@ export default function AIChatbot({ compareLocations }: AIChatbotProps) {
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const [, setLocation] = useLocation();
+  const { addToCompare, addSavedLocation } = useLocations();
 
   // Scroll to bottom of messages when new message is added
   useEffect(() => {
@@ -87,12 +99,13 @@ export default function AIChatbot({ compareLocations }: AIChatbotProps) {
         locationIds
       });
       
-      // Add AI response to chat - clean the response first
+      // Add AI response to chat - clean the response first and include mentioned locations
       const aiMessage: Message = {
         id: generateId(),
         text: cleanAIResponse(response.data.response),
         sender: "ai",
-        timestamp: new Date()
+        timestamp: new Date(),
+        mentionedLocations: response.data.mentionedLocations || []
       };
       
       setMessages(prev => [...prev, aiMessage]);

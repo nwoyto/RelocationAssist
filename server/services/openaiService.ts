@@ -158,15 +158,24 @@ Limit your response to about 500-700 words.
  * @param compareLocations Optional locations for comparison (when using compare feature)
  * @returns AI response to the query
  */
+export interface AIResponseWithLocationData {
+  html: string;
+  mentionedLocations: {
+    name: string;
+    state: string;
+    id: number;
+  }[];
+}
+
 export async function processLocationQuery(
   query: string, 
   locations: Location[], 
   compareLocations?: Location[]
-): Promise<string> {
+): Promise<AIResponseWithLocationData> {
   try {
     // Create context based on available locations
     const locationContext = locations.map(loc => 
-      `${loc.name}, ${loc.state}: Population ${loc.population || 'Unknown'}, Region: ${loc.region || 'Unknown'}`
+      `${loc.name}, ${loc.state}: Population ${loc.population || 'Unknown'}, Region: ${loc.region || 'Unknown'}, ID: ${loc.id}`
     ).join("\n");
 
     // Additional context if comparison is requested
@@ -181,7 +190,7 @@ export async function processLocationQuery(
           const schoolData = (loc as any).schoolData || {};
           
           return `
-- ${loc.name}, ${loc.state}:
+- ${loc.name}, ${loc.state} (ID: ${loc.id}):
   Population: ${loc.population || 'Data not available'}
   Median Income: $${loc.medianIncome || 'Data not available'}
   Cost of Living: ${loc.costOfLiving || 'Data not available'} (national avg: 100)
@@ -205,9 +214,22 @@ ${comparisonContext}
 
 Please provide a helpful, accurate and detailed response to the user's query about CBP relocation information.
 If the query is about comparing locations, provide a clear comparison of relevant factors between the cities.
-If the query is about a specific location, focus on that location's details.
+If the query is about specific locations, focus on those location's details.
+If you recommend any cities in your response, make sure to specifically mention them by name and state (e.g., "Denver, CO").
 If you don't have enough information to answer, suggest what additional information would be helpful.
 Format your response in HTML with appropriate tags for readability.
+
+IMPORTANT: After your main response, add a separate JSON block containing all the cities you mentioned, recommended, or discussed in your response. Format this as:
+<json>
+{
+  "mentionedLocations": [
+    {"name": "City Name", "state": "ST"},
+    {"name": "Another City", "state": "ST"}
+  ]
+}
+</json>
+
+Only include cities in this JSON that are in the available locations list I provided.
 `;
 
     // Call OpenAI API to process the query
@@ -221,14 +243,54 @@ Format your response in HTML with appropriate tags for readability.
         { role: "user", content: prompt }
       ],
       temperature: 0.7,
-      max_tokens: 1000
+      max_tokens: 1200
     });
 
-    // Return the AI's response
-    return response.choices[0].message.content || "I'm sorry, I couldn't process your query at this time.";
+    // Extract HTML content and mentioned locations from the response
+    const content = response.choices[0].message.content || "I'm sorry, I couldn't process your query at this time.";
+    
+    // Extract the JSON data part if it exists
+    let mentionedLocations: {name: string, state: string, id: number}[] = [];
+    const jsonMatch = content.match(/<json>([\s\S]*?)<\/json>/);
+    
+    if (jsonMatch && jsonMatch[1]) {
+      try {
+        const jsonData = JSON.parse(jsonMatch[1]);
+        
+        // Match the mentioned locations with their IDs from our database
+        if (jsonData.mentionedLocations && Array.isArray(jsonData.mentionedLocations)) {
+          mentionedLocations = jsonData.mentionedLocations.map(loc => {
+            // Find matching location in our database
+            const matchingLocation = locations.find(
+              dbLoc => dbLoc.name.toLowerCase() === loc.name.toLowerCase() && 
+                      dbLoc.state.toLowerCase() === loc.state.toLowerCase()
+            );
+            
+            return {
+              name: loc.name,
+              state: loc.state,
+              id: matchingLocation?.id || 0
+            };
+          }).filter(loc => loc.id !== 0); // Only include locations that were found in our database
+        }
+      } catch (err) {
+        console.error("Error parsing location JSON data:", err);
+      }
+    }
+    
+    // Remove the JSON part from the HTML content
+    const htmlContent = content.replace(/<json>[\s\S]*?<\/json>/g, '');
+    
+    return {
+      html: htmlContent,
+      mentionedLocations
+    };
   } catch (error) {
     console.error("Error processing location query:", error);
-    return "I'm sorry, I'm having trouble processing your question right now. Please try again later.";
+    return {
+      html: "I'm sorry, I'm having trouble processing your question right now. Please try again later.",
+      mentionedLocations: []
+    };
   }
 }
 
