@@ -124,7 +124,8 @@ export default function AIChatbot({ compareLocations }: AIChatbotProps) {
     <Card className="w-full shadow-lg border-t-4 border-t-primary flex flex-col h-[600px] overflow-hidden">
       <CardHeader className="pb-3">
         <div className="flex items-center">
-          <Avatar className="h-10 w-10 mr-2 bg-primary text-primary-foreground">
+          <Avatar className="h-10 w-10 mr-2 bg-white">
+            <AvatarImage src="/img/cbp-logo.png" alt="CBP Logo" />
             <AvatarFallback><Bot size={20} /></AvatarFallback>
           </Avatar>
           <div>
