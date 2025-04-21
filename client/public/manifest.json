@@ -1,0 +1,15 @@
+{
+  "short_name": "CBP Relocate",
+  "name": "CBP Relocation Resources Platform",
+  "icons": [
+    {
+      "src": "../src/assets/cbp-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#1a4480",
+  "background_color": "#ffffff"
+}
