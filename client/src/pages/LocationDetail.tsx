@@ -449,21 +449,9 @@ const LocationDetail = () => {
                               />
                             </div>
                           )}
-                        
-                          <div className="bg-neutral-50 p-4 rounded mb-6">
-                            {/* Rentcast Property Listings Component */}
-                            <RentcastPropertyListings
-                              city={location.name}
-                              state={location.state}
-                              limit={3}
-                            />
-                            
-                            <div className="text-center mt-4">
-                              <a href="#" className="text-[#005ea2] font-medium text-sm hover:underline">View all listings</a>
-                            </div>
-                          </div>
                           
-                          <div className="bg-neutral-50 p-4 rounded">
+                          {/* Mortgage Calculator - Moved to top */}
+                          <div className="bg-neutral-50 p-4 rounded mb-6">
                             <h4 className="font-medium mb-3">Mortgage Calculator</h4>
                             
                             <div className="space-y-3">
@@ -505,6 +493,20 @@ const LocationDetail = () => {
                                   <span className="font-semibold">${location.housingData.estimatedMortgage}/mo</span>
                                 </div>
                               </div>
+                            </div>
+                          </div>
+                        
+                          {/* Property Listings - Moved below mortgage calculator */}
+                          <div className="bg-neutral-50 p-4 rounded">
+                            {/* Rentcast Property Listings Component */}
+                            <RentcastPropertyListings
+                              city={location.name}
+                              state={location.state}
+                              limit={3}
+                            />
+                            
+                            <div className="text-center mt-4">
+                              <a href="#" className="text-[#005ea2] font-medium text-sm hover:underline">View all listings</a>
                             </div>
                           </div>
                         </div>
