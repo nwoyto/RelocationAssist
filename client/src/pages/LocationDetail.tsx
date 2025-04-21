@@ -98,54 +98,67 @@ const LocationDetail = () => {
                   <div className="flex items-center mb-2">
                     <button 
                       onClick={() => navigate('/')} 
-                      className="mr-2 p-1 hover:bg-neutral-100 rounded transition-colors"
+                      className="mr-2 p-2 hover:bg-neutral-100 rounded-full transition-colors"
+                      aria-label="Go back"
                     >
                       <span className="material-icons">arrow_back</span>
                     </button>
-                    <h2 className="font-['Public_Sans'] text-2xl font-bold">
+                    <h2 className="font-['Public_Sans'] text-xl sm:text-2xl font-bold truncate">
                       {location.name}, {location.state}
                     </h2>
                   </div>
-                  <p className="text-neutral-500">{location.region} • CBP Field Operations</p>
+                  <p className="text-neutral-500 text-sm sm:text-base">{location.region} • CBP Field Operations</p>
                 </div>
-                <div className="flex flex-wrap gap-2 mt-4 md:mt-0">
-                  <button className="flex items-center py-2 px-4 border border-neutral-200 hover:border-neutral-300 rounded transition-colors">
-                    <span className="material-icons text-sm mr-1">bookmark_border</span>
-                    Save
+                
+                {/* Mobile-optimized action buttons */}
+                <div className="flex flex-wrap gap-2 mt-4 md:mt-0 w-full md:w-auto">
+                  {/* Save Button - Icon only on mobile */}
+                  <button className="flex items-center py-2 px-3 sm:px-4 border border-neutral-200 hover:border-neutral-300 rounded-lg transition-colors">
+                    <span className="material-icons text-base mr-0 sm:mr-1">bookmark_border</span>
+                    <span className="hidden sm:inline">Save</span>
                   </button>
+                  
+                  {/* Compare Button - Abbreviated on mobile */}
                   <button 
                     onClick={() => {
                       isInCompare(location.id) 
                         ? removeFromCompare(location.id) 
                         : addToCompare(location.id);
                     }} 
-                    className={`flex items-center py-2 px-4 border rounded ${
+                    className={`flex items-center py-2 px-3 sm:px-4 border rounded-lg flex-1 justify-center sm:justify-start sm:flex-none ${
                       isInCompare(location.id) 
                         ? 'bg-[#1a75b8] text-white border-[#1a75b8]' 
                         : 'border-neutral-200 hover:border-neutral-300'
                     }`}
                   >
-                    <span className="material-icons text-sm mr-1">
+                    <span className="material-icons text-base mr-1">
                       {isInCompare(location.id) ? 'check' : 'compare_arrows'}
                     </span>
-                    <span>
+                    <span className="hidden xs:inline">
                       {isInCompare(location.id) ? 'Added to Compare' : 'Add to Compare'}
                     </span>
+                    <span className="xs:hidden">
+                      {isInCompare(location.id) ? 'Added' : 'Compare'}
+                    </span>
                   </button>
+                  
+                  {/* Generate Summary Button */}
                   <button 
                     onClick={() => generateCitySummary(location)}
                     disabled={generatingSummary}
-                    className="flex items-center py-2 px-4 bg-[#005ea2] hover:bg-[#00477b] text-white rounded transition-colors"
+                    className="flex items-center py-2 px-3 sm:px-4 bg-[#005ea2] hover:bg-[#00477b] text-white rounded-lg transition-colors flex-1 justify-center sm:justify-start sm:flex-none"
                   >
                     {generatingSummary ? (
                       <>
-                        <span className="material-icons animate-spin text-sm mr-1">autorenew</span>
-                        <span>Generating...</span>
+                        <span className="material-icons animate-spin text-base mr-1">autorenew</span>
+                        <span className="hidden xs:inline">Generating...</span>
+                        <span className="xs:hidden">Loading...</span>
                       </>
                     ) : (
                       <>
-                        <span className="material-icons text-sm mr-1">summarize</span>
-                        <span>Generate Summary</span>
+                        <span className="material-icons text-base mr-1">summarize</span>
+                        <span className="hidden xs:inline">Generate Summary</span>
+                        <span className="xs:hidden">Summary</span>
                       </>
                     )}
                   </button>
@@ -258,86 +271,86 @@ const LocationDetail = () => {
               <div className="mb-6">
                 <div className="bg-white rounded-lg shadow-md">
                   {/* Tabs */}
-                  <div className="flex overflow-x-auto border-b border-neutral-100">
+                  <div className="flex overflow-x-auto scrollbar-hide border-b border-neutral-100 pb-1">
                     <button 
                       onClick={() => setActiveTab('housing')} 
-                      className={`px-4 py-3 font-medium whitespace-nowrap ${
+                      className={`px-3 sm:px-4 py-3 font-medium text-sm sm:text-base whitespace-nowrap flex items-center ${
                         activeTab === 'housing' 
                           ? 'border-b-2 border-[#005ea2] text-[#005ea2]' 
                           : 'text-neutral-500'
                       }`}
                     >
-                      <span className="material-icons text-sm align-text-top mr-1">home</span> Housing
+                      <span className="material-icons text-base align-text-top mr-1">home</span> Housing
                     </button>
                     <button 
                       onClick={() => setActiveTab('schools')} 
-                      className={`px-4 py-3 font-medium whitespace-nowrap ${
+                      className={`px-3 sm:px-4 py-3 font-medium text-sm sm:text-base whitespace-nowrap flex items-center ${
                         activeTab === 'schools' 
                           ? 'border-b-2 border-[#005ea2] text-[#005ea2]' 
                           : 'text-neutral-500'
                       }`}
                     >
-                      <span className="material-icons text-sm align-text-top mr-1">school</span> Schools
+                      <span className="material-icons text-base align-text-top mr-1">school</span> Schools
                     </button>
                     <button 
                       onClick={() => setActiveTab('safety')} 
-                      className={`px-4 py-3 font-medium whitespace-nowrap ${
+                      className={`px-3 sm:px-4 py-3 font-medium text-sm sm:text-base whitespace-nowrap flex items-center ${
                         activeTab === 'safety' 
                           ? 'border-b-2 border-[#005ea2] text-[#005ea2]' 
                           : 'text-neutral-500'
                       }`}
                     >
-                      <span className="material-icons text-sm align-text-top mr-1">shield</span> Safety
+                      <span className="material-icons text-base align-text-top mr-1">shield</span> Safety
                     </button>
                     <button 
                       onClick={() => setActiveTab('lifestyle')} 
-                      className={`px-4 py-3 font-medium whitespace-nowrap ${
+                      className={`px-3 sm:px-4 py-3 font-medium text-sm sm:text-base whitespace-nowrap flex items-center ${
                         activeTab === 'lifestyle' 
                           ? 'border-b-2 border-[#005ea2] text-[#005ea2]' 
                           : 'text-neutral-500'
                       }`}
                     >
-                      <span className="material-icons text-sm align-text-top mr-1">restaurant</span> Lifestyle
+                      <span className="material-icons text-base align-text-top mr-1">restaurant</span> Lifestyle
                     </button>
                     <button 
                       onClick={() => setActiveTab('transportation')} 
-                      className={`px-4 py-3 font-medium whitespace-nowrap ${
+                      className={`px-3 sm:px-4 py-3 font-medium text-sm sm:text-base whitespace-nowrap flex items-center ${
                         activeTab === 'transportation' 
                           ? 'border-b-2 border-[#005ea2] text-[#005ea2]' 
                           : 'text-neutral-500'
                       }`}
                     >
-                      <span className="material-icons text-sm align-text-top mr-1">directions_car</span> Transportation
+                      <span className="material-icons text-base align-text-top mr-1">directions_car</span> Transport
                     </button>
                     <button 
                       onClick={() => setActiveTab('climate')} 
-                      className={`px-4 py-3 font-medium whitespace-nowrap ${
+                      className={`px-3 sm:px-4 py-3 font-medium text-sm sm:text-base whitespace-nowrap flex items-center ${
                         activeTab === 'climate' 
                           ? 'border-b-2 border-[#005ea2] text-[#005ea2]' 
                           : 'text-neutral-500'
                       }`}
                     >
-                      <span className="material-icons text-sm align-text-top mr-1">wb_sunny</span> Climate
+                      <span className="material-icons text-base align-text-top mr-1">wb_sunny</span> Climate
                     </button>
                     <button 
                       onClick={() => setActiveTab('census')} 
-                      className={`px-4 py-3 font-medium whitespace-nowrap ${
+                      className={`px-3 sm:px-4 py-3 font-medium text-sm sm:text-base whitespace-nowrap flex items-center ${
                         activeTab === 'census' 
                           ? 'border-b-2 border-[#005ea2] text-[#005ea2]' 
                           : 'text-neutral-500'
                       }`}
                     >
-                      <span className="material-icons text-sm align-text-top mr-1">people</span> Census Data
+                      <span className="material-icons text-base align-text-top mr-1">people</span> Census
                     </button>
                     <button 
                       onClick={() => setActiveTab('ai')} 
-                      className={`px-4 py-3 font-medium whitespace-nowrap ${
+                      className={`px-3 sm:px-4 py-3 font-medium text-sm sm:text-base whitespace-nowrap flex items-center ${
                         activeTab === 'ai' 
                           ? 'border-b-2 border-[#005ea2] text-[#005ea2]' 
                           : 'text-neutral-500'
                       }`}
                     >
-                      <span className="material-icons text-sm align-text-top mr-1">smart_toy</span> AI Insights
+                      <span className="material-icons text-base align-text-top mr-1">smart_toy</span> AI Insights
                     </button>
                   </div>
                   
@@ -397,23 +410,23 @@ const LocationDetail = () => {
                               <a href="#" className="text-[#005ea2] text-sm hover:underline">View All</a>
                             </div>
                             
-                            <div className="overflow-x-auto">
+                            <div className="overflow-x-auto scrollbar-hide rounded-lg border border-neutral-100">
                               <table className="min-w-full divide-y divide-neutral-200">
                                 <thead>
-                                  <tr>
+                                  <tr className="bg-neutral-50">
                                     <th className="px-4 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Neighborhood</th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Median Price</th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Home Types</th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Price</th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider hidden sm:table-cell">Home Types</th>
                                     <th className="px-4 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Rating</th>
                                   </tr>
                                 </thead>
-                                <tbody className="divide-y divide-neutral-100">
+                                <tbody className="divide-y divide-neutral-100 bg-white">
                                   {location.housingData.neighborhoods.map((neighborhood: { name: string; medianPrice: number; homeTypes: string; rating: number }, index: number) => (
-                                    <tr key={index}>
-                                      <td className="px-4 py-3 whitespace-nowrap">{neighborhood.name}</td>
-                                      <td className="px-4 py-3 whitespace-nowrap">${neighborhood.medianPrice.toLocaleString()}</td>
-                                      <td className="px-4 py-3 whitespace-nowrap">{neighborhood.homeTypes}</td>
-                                      <td className="px-4 py-3 whitespace-nowrap">
+                                    <tr key={index} className="hover:bg-neutral-50">
+                                      <td className="px-4 py-3.5">{neighborhood.name}</td>
+                                      <td className="px-4 py-3.5 font-medium">${neighborhood.medianPrice.toLocaleString()}</td>
+                                      <td className="px-4 py-3.5 hidden sm:table-cell">{neighborhood.homeTypes}</td>
+                                      <td className="px-4 py-3.5">
                                         <StarRating rating={neighborhood.rating} />
                                       </td>
                                     </tr>
