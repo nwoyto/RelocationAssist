@@ -1,4 +1,4 @@
-import cbpLogo from "../assets/cbp-logo.png";
+
 
 const Footer = () => {
   return (
@@ -8,7 +8,7 @@ const Footer = () => {
           <div className="mb-6 md:mb-0">
             <div className="flex items-center">
               <img 
-                src={cbpLogo} 
+                src="/img/cbp-logo.png" 
                 alt="CBP Logo" 
                 className="h-14 w-14 mr-3 bg-white rounded-full p-1"
               />

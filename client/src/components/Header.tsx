@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import cbpLogo from "../assets/cbp-logo.png";
 
 const Header = () => {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
@@ -14,7 +13,7 @@ const Header = () => {
             <Link href="/">
               <div className="flex items-center cursor-pointer">
                 <img 
-                  src={cbpLogo} 
+                  src="/img/cbp-logo.png" 
                   alt="CBP Logo" 
                   className="h-16 w-16 mr-3 bg-white rounded-full p-1"
                 />
