@@ -196,9 +196,20 @@ const LocationDetail = () => {
                   <div className="sm:flex">
                     {/* Map Preview */}
                     <div 
-                      className="w-full sm:w-1/3 lg:w-2/5 bg-neutral-200 sm:h-auto" 
-                      style={{ height: '250px' }}
+                      className="w-full sm:w-1/3 lg:w-2/5 bg-neutral-200 sm:h-auto rounded-lg overflow-hidden" 
+                      style={{ 
+                        height: '250px', 
+                        position: 'relative' 
+                      }}
                     >
+                      {/* Add a fallback background that shows while map is loading */}
+                      <div className="absolute inset-0 bg-neutral-100 flex items-center justify-center">
+                        <div className="text-neutral-400 flex flex-col items-center">
+                          <span className="material-icons text-3xl mb-1">location_on</span>
+                          <div className="text-sm">{location.name}</div>
+                        </div>
+                      </div>
+                      
                       <LocationMap
                         locations={[location]}
                         selectedLocationId={location.id}
