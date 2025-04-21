@@ -40,10 +40,22 @@ const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
 
   return (
     <aside 
-      className={`fixed lg:static inset-0 z-40 w-64 md:w-72 bg-white shadow-lg transition-transform duration-300 ease-in-out flex flex-col h-[calc(100vh-56px)] ${
+      className={`fixed lg:static inset-0 z-40 w-full sm:w-80 md:w-72 bg-white shadow-lg transition-transform duration-300 ease-in-out flex flex-col h-[calc(100vh-56px)] ${
         isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}
     >
+      {/* Mobile header with close button */}
+      <div className="p-3 border-b border-neutral-100 flex justify-between items-center lg:hidden">
+        <h2 className="font-medium text-lg">CBP Relocations</h2>
+        <button 
+          onClick={onToggle}
+          className="p-2 -mr-2 rounded-full hover:bg-neutral-100 flex items-center justify-center"
+          aria-label="Close sidebar"
+        >
+          <span className="material-icons">close</span>
+        </button>
+      </div>
+      
       {/* Search Input */}
       <div className="p-4 border-b border-neutral-100">
         <div className="relative">
@@ -52,9 +64,9 @@ const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search locations..." 
-            className="w-full pl-10 pr-4 py-2 rounded border border-neutral-200 focus:border-[#005ea2] focus:ring-1 focus:ring-[#005ea2] focus:outline-none" 
+            className="w-full pl-10 pr-4 py-3 rounded border border-neutral-200 focus:border-[#005ea2] focus:ring-1 focus:ring-[#005ea2] focus:outline-none text-base" 
           />
-          <span className="material-icons absolute left-3 top-2 text-neutral-400">search</span>
+          <span className="material-icons absolute left-3 top-3 text-neutral-400">search</span>
         </div>
       </div>
       
@@ -62,33 +74,33 @@ const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
       <div className="flex border-b border-neutral-100">
         <button 
           onClick={() => setCurrentView('explore')} 
-          className={`flex-1 py-3 font-medium text-sm ${
+          className={`flex-1 py-3 font-medium text-base ${
             currentView === 'explore' 
               ? 'border-b-2 border-[#005ea2] text-[#005ea2]' 
               : 'text-neutral-500'
           }`}
         >
-          <span className="material-icons text-sm align-text-top mr-1">explore</span> Explore
+          <span className="material-icons text-base align-text-top mr-1">explore</span> Explore
         </button>
         <button 
           onClick={() => setCurrentView('saved')} 
-          className={`flex-1 py-3 font-medium text-sm ${
+          className={`flex-1 py-3 font-medium text-base ${
             currentView === 'saved' 
               ? 'border-b-2 border-[#005ea2] text-[#005ea2]' 
               : 'text-neutral-500'
           }`}
         >
-          <span className="material-icons text-sm align-text-top mr-1">bookmark</span> Saved
+          <span className="material-icons text-base align-text-top mr-1">bookmark</span> Saved
         </button>
         <button 
           onClick={() => setCurrentView('compare')} 
-          className={`flex-1 py-3 font-medium text-sm ${
+          className={`flex-1 py-3 font-medium text-base ${
             currentView === 'compare' 
               ? 'border-b-2 border-[#005ea2] text-[#005ea2]' 
               : 'text-neutral-500'
           }`}
         >
-          <span className="material-icons text-sm align-text-top mr-1">compare</span> Compare
+          <span className="material-icons text-base align-text-top mr-1">compare</span> Compare
           {compareLocations.length > 0 && (
             <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-xs font-semibold rounded-full bg-[#005ea2] text-white">
               {compareLocations.length}
@@ -102,31 +114,42 @@ const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
         {currentView === 'explore' && (
           <div className="divide-y divide-neutral-100">
             {/* Filter Bar */}
-            <div className="p-3 bg-neutral-50 text-sm flex justify-between items-center">
+            <div className="p-4 bg-neutral-50 text-base flex justify-between items-center">
               <span className="text-neutral-500">Filter by:</span>
               <div className="relative">
                 <button 
                   onClick={() => setIsRegionOpen(!isRegionOpen)} 
-                  className="text-[#005ea2] flex items-center"
+                  className="text-[#005ea2] flex items-center py-2 px-3 border border-transparent hover:border-neutral-200 rounded-md"
+                  aria-expanded={isRegionOpen}
+                  aria-haspopup="true"
                 >
                   <span>{regionFilter}</span>
-                  <span className="material-icons text-sm ml-1">expand_more</span>
+                  <span className="material-icons text-base ml-1">expand_more</span>
                 </button>
                 {isRegionOpen && (
-                  <div 
-                    className="absolute right-0 mt-1 w-40 bg-white shadow-md rounded z-10 p-2 text-sm"
-                    onClick={() => setIsRegionOpen(false)}
-                  >
-                    {regions.map((region) => (
-                      <div 
-                        key={region}
-                        className="py-1 px-2 hover:bg-neutral-50 cursor-pointer"
-                        onClick={() => setRegionFilter(region)}
-                      >
-                        {region}
-                      </div>
-                    ))}
-                  </div>
+                  <>
+                    {/* Overlay to help with touch dismiss */}
+                    <div 
+                      className="fixed inset-0 z-10" 
+                      onClick={() => setIsRegionOpen(false)}
+                    />
+                    <div 
+                      className="absolute right-0 mt-1 w-48 bg-white shadow-lg rounded-md z-20 p-1 text-base"
+                    >
+                      {regions.map((region) => (
+                        <button 
+                          key={region}
+                          className="w-full text-left py-2.5 px-4 hover:bg-neutral-50 active:bg-neutral-100 rounded"
+                          onClick={() => {
+                            setRegionFilter(region);
+                            setIsRegionOpen(false);
+                          }}
+                        >
+                          {region}
+                        </button>
+                      ))}
+                    </div>
+                  </>
                 )}
               </div>
             </div>
