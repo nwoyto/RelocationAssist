@@ -197,7 +197,7 @@ const LocationDetail = () => {
                     {/* Map Preview */}
                     <div 
                       className="w-full sm:w-1/3 lg:w-2/5 bg-neutral-200 sm:h-auto" 
-                      style={{ height: '250px' }}
+                      style={{ minHeight: '220px' }}
                     >
                       <LocationMap
                         locations={[location]}
