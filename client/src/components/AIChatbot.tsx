@@ -144,7 +144,7 @@ export default function AIChatbot({ compareLocations }: AIChatbotProps) {
   };
 
   return (
-    <Card className="w-full shadow-lg border-t-4 border-t-primary flex flex-col h-[600px] overflow-hidden">
+    <Card className="w-full md:max-w-4xl mx-auto shadow-lg border-t-4 border-t-primary flex flex-col h-[650px] overflow-hidden">
       <CardHeader className="pb-3">
         <div className="flex items-center">
           <Avatar className="h-10 w-10 mr-2 bg-white">
