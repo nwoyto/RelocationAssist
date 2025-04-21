@@ -72,8 +72,30 @@
     margin-top: -41px !important;
     width: 30px !important;
     height: 41px !important;
-    padding: 10px;
+    padding: 12px;
     box-sizing: content-box;
     background-color: transparent;
+    cursor: pointer !important;
+    z-index: 500 !important;
+  }
+  
+  /* Force marker to be above other elements */
+  .leaflet-marker-pane {
+    z-index: 600 !important;
+  }
+  
+  /* Make popup contents clickable */
+  .leaflet-popup-content {
+    cursor: default;
+    pointer-events: auto !important;
+  }
+  
+  /* Make popup close button easier to tap */
+  .leaflet-popup-close-button {
+    font-size: 18px !important;
+    padding: 8px !important;
+    width: 30px !important;
+    height: 30px !important;
+    z-index: 800 !important;
   }
 }

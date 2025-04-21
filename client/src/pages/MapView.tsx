@@ -42,11 +42,12 @@ const MapView = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
           <div>
             <div className="flex items-center mb-2">
-              <Link href="/">
-                <a className="mr-2 p-1 hover:bg-neutral-100 rounded transition-colors">
-                  <span className="material-icons">arrow_back</span>
-                </a>
-              </Link>
+              <div 
+                onClick={() => navigate('/')}
+                className="mr-2 p-1 hover:bg-neutral-100 rounded transition-colors cursor-pointer"
+              >
+                <span className="material-icons">arrow_back</span>
+              </div>
               <h2 className="font-['Public_Sans'] text-2xl font-bold">
                 CBP Port Locations Map
               </h2>
@@ -154,11 +155,12 @@ const MapView = () => {
               </div>
               
               <div className="flex justify-center mt-4">
-                <Link href={`/location/${selectedLocation.id}`}>
-                  <a className="bg-[#005ea2] hover:bg-[#00477b] text-white py-2 px-4 rounded transition-colors">
-                    View Full Details
-                  </a>
-                </Link>
+                <div 
+                  onClick={() => navigate(`/location/${selectedLocation.id}`)}
+                  className="bg-[#005ea2] hover:bg-[#00477b] text-white py-2 px-4 rounded transition-colors cursor-pointer"
+                >
+                  View Full Details
+                </div>
               </div>
             </div>
           </div>

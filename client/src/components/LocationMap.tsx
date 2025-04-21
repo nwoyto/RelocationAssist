@@ -164,12 +164,12 @@ const LocationMap = ({
                 <p className="text-sm text-neutral-500">{location.region} Region</p>
                 {interactive && (
                   <div className="mt-2">
-                    <button
+                    <span
                       onClick={() => navigate(`/location/${location.id}`)}
-                      className="px-3 py-1 text-xs bg-[#005ea2] text-white rounded hover:bg-[#00477b]"
+                      className="px-3 py-1 text-xs bg-[#005ea2] text-white rounded hover:bg-[#00477b] cursor-pointer inline-block"
                     >
                       View Details
-                    </button>
+                    </span>
                   </div>
                 )}
               </div>
