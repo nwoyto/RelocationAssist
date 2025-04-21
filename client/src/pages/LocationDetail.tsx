@@ -180,11 +180,110 @@ const LocationDetail = () => {
                       <span className="material-icons">close</span>
                     </button>
                   </div>
-                  <div className="p-5">
+                  <div className="px-4 py-5 sm:p-5">
                     <div className="prose max-w-none">
-                      {citySummary.split('\n').map((paragraph, index) => (
-                        <p key={index}>{paragraph}</p>
-                      ))}
+                      {/* Organize content by sections */}
+                      {(() => {
+                        // Parse the citySummary into sections
+                        const sections: Array<{ title: string, content: string[] }> = [];
+                        let currentSection: { title: string, content: string[] } = { title: '', content: [] };
+                        let sectionIndex = 0;
+                        
+                        citySummary.split('\n').forEach((paragraph) => {
+                          if (paragraph.startsWith('###')) {
+                            // If we've already gathered content for a section, add it to our list
+                            if (currentSection.title) {
+                              sections.push(currentSection);
+                            }
+                            // Start a new section
+                            currentSection = { 
+                              title: paragraph.replace('###', '').trim(), 
+                              content: []
+                            };
+                          } else if (paragraph.trim()) {
+                            // Add paragraph to current section
+                            currentSection.content.push(paragraph);
+                          }
+                        });
+                        
+                        // Add the last section
+                        if (currentSection.title) {
+                          sections.push(currentSection);
+                        }
+                        
+                        // Render each section
+                        return (
+                          <div className="space-y-6">
+                            {sections.map((section, sectionIdx) => {
+                              // Determine icon for this section
+                              let sectionIcon = "article";
+                              if (section.title === 'Overview' || section.title.includes('Overview of')) {
+                                sectionIcon = "info";
+                              } else if (section.title.includes('Quality of Life')) {
+                                sectionIcon = "emoji_emotions";
+                              } else if (section.title.includes('Housing')) {
+                                sectionIcon = "home";
+                              } else if (section.title.includes('Community') || section.title.includes('Amenities')) {
+                                sectionIcon = "park";
+                              } else if (section.title.includes('Education')) {
+                                sectionIcon = "school";
+                              } else if (section.title.includes('Transportation')) {
+                                sectionIcon = "directions_car";
+                              }
+                              
+                              return (
+                                <div key={sectionIdx} 
+                                  className={`bg-white border border-neutral-200 rounded-lg shadow-sm overflow-hidden 
+                                    ${sectionIdx === 0 ? 'border-l-4 border-l-[#005ea2]' : ''}`}>
+                                  <div className="bg-gradient-to-r from-neutral-50 to-white p-3 border-b border-neutral-100">
+                                    <h3 className="text-[#1a4480] font-semibold text-lg flex items-center">
+                                      <span className="material-icons mr-2 text-[#005ea2]">{sectionIcon}</span>
+                                      {section.title}
+                                    </h3>
+                                  </div>
+                                  
+                                  <div className="p-4 text-neutral-700">
+                                    {section.content.map((paragraph, paraIdx) => {
+                                      // We'll apply simple text matching and insert regular text 
+                                      // This approach doesn't use JSX elements to avoid TypeScript issues
+                                      let paragraphText = paragraph;
+                                      
+                                      // Check for different types of content and add prefixes with icons
+                                      if (paragraph.includes("population of")) {
+                                        paragraphText = `🏙️ ${paragraph}`;
+                                      } else if (paragraph.includes("median income")) {
+                                        paragraphText = `💵 ${paragraph}`;  
+                                      } else if (paragraph.includes("cost of living")) {
+                                        paragraphText = `💰 ${paragraph}`;
+                                      } else if (paragraph.includes("affordable") || paragraph.includes("price")) {
+                                        paragraphText = `🏠 ${paragraph}`;
+                                      } else if (paragraph.includes("education") || paragraph.includes("schools")) {
+                                        paragraphText = `🎓 ${paragraph}`;  
+                                      } else if (paragraph.includes("crime") || paragraph.includes("safety")) {
+                                        paragraphText = `🛡️ ${paragraph}`;
+                                      } else if (paragraph.includes("commute") || paragraph.includes("transportation")) {
+                                        paragraphText = `🚗 ${paragraph}`;
+                                      } else if (paragraph.includes("climate") || paragraph.includes("weather")) {
+                                        paragraphText = `☀️ ${paragraph}`;
+                                      } else if (paragraph.includes("parks") || paragraph.includes("entertainment")) {
+                                        paragraphText = `🎭 ${paragraph}`;
+                                      } else if (paragraph.includes("restaurants") || paragraph.includes("dining")) {
+                                        paragraphText = `🍽️ ${paragraph}`;
+                                      }
+                                      
+                                      return (
+                                        <p key={paraIdx} className="mb-3 leading-relaxed last:mb-0">
+                                          {paragraphText}
+                                        </p>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
                 </div>
