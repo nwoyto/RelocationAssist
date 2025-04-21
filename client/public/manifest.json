@@ -3,7 +3,7 @@
   "name": "CBP Relocation Resources Platform",
   "icons": [
     {
-      "src": "../src/assets/cbp-logo.png",
+      "src": "/img/cbp-logo.png",
       "sizes": "512x512",
       "type": "image/png"
     }
