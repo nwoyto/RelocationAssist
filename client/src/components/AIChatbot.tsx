@@ -57,7 +57,7 @@ export default function AIChatbot({ compareLocations }: AIChatbotProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [, setLocation] = useLocation();
-  const { addToCompare, addSavedLocation } = useLocations();
+  const { addToCompare, isInCompare } = useLocations();
 
   // Scroll to bottom of messages when new message is added
   useEffect(() => {
@@ -132,6 +132,16 @@ export default function AIChatbot({ compareLocations }: AIChatbotProps) {
       handleSubmit();
     }
   };
+  
+  // Handle adding a location to comparison
+  const handleAddToCompare = (locationId: number) => {
+    addToCompare(locationId);
+  };
+  
+  // Handle viewing a location's details
+  const handleViewLocation = (locationId: number) => {
+    setLocation(`/location/${locationId}`);
+  };
 
   return (
     <Card className="w-full shadow-lg border-t-4 border-t-primary flex flex-col h-[600px] overflow-hidden">
@@ -180,7 +190,45 @@ export default function AIChatbot({ compareLocations }: AIChatbotProps) {
                   }`}
                 >
                   {message.sender === "ai" ? (
-                    <div className="prose prose-sm dark:prose-invert max-w-none prose-table:w-full prose-table:my-2 prose-table:overflow-x-auto" dangerouslySetInnerHTML={{ __html: message.text }} />
+                    <>
+                      <div className="prose prose-sm dark:prose-invert max-w-none prose-table:w-full prose-table:my-2 prose-table:overflow-x-auto" dangerouslySetInnerHTML={{ __html: message.text }} />
+                      
+                      {/* Show recommended locations if any */}
+                      {message.mentionedLocations && message.mentionedLocations.length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-gray-100">
+                          <p className="text-xs font-medium mb-2">Mentioned Locations:</p>
+                          <div className="flex flex-wrap gap-2">
+                            {message.mentionedLocations.map(location => (
+                              <div key={location.id} className="flex gap-1 items-center bg-white rounded-lg border border-gray-200 p-1.5 shadow-sm">
+                                <MapPin size={12} className="text-primary" />
+                                <span className="text-xs font-medium">{location.name}, {location.state}</span>
+                                <div className="flex gap-1 ml-1">
+                                  <Button 
+                                    variant="ghost" 
+                                    size="icon" 
+                                    className="h-6 w-6" 
+                                    title="Add to comparison"
+                                    onClick={() => handleAddToCompare(location.id)}
+                                    disabled={isInCompare(location.id)}
+                                  >
+                                    <Plus size={12} className={isInCompare(location.id) ? "text-muted-foreground" : "text-primary"} />
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="icon" 
+                                    className="h-6 w-6" 
+                                    title="View location details"
+                                    onClick={() => handleViewLocation(location.id)}
+                                  >
+                                    <ExternalLink size={12} className="text-primary" />
+                                  </Button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </>
                   ) : (
                     <p className="text-sm">{message.text}</p>
                   )}

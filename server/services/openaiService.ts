@@ -259,7 +259,7 @@ Only include cities in this JSON that are in the available locations list I prov
         
         // Match the mentioned locations with their IDs from our database
         if (jsonData.mentionedLocations && Array.isArray(jsonData.mentionedLocations)) {
-          mentionedLocations = jsonData.mentionedLocations.map(loc => {
+          mentionedLocations = jsonData.mentionedLocations.map((loc: {name: string, state: string}) => {
             // Find matching location in our database
             const matchingLocation = locations.find(
               dbLoc => dbLoc.name.toLowerCase() === loc.name.toLowerCase() && 
@@ -271,7 +271,7 @@ Only include cities in this JSON that are in the available locations list I prov
               state: loc.state,
               id: matchingLocation?.id || 0
             };
-          }).filter(loc => loc.id !== 0); // Only include locations that were found in our database
+          }).filter((loc: {id: number}) => loc.id !== 0); // Only include locations that were found in our database
         }
       } catch (err) {
         console.error("Error parsing location JSON data:", err);
