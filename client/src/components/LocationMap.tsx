@@ -73,64 +73,26 @@ const LocationMap = ({
 }: LocationMapProps) => {
   const [, navigate] = useLocation();
   const [mapReady, setMapReady] = useState(false);
-  const [mapKey, setMapKey] = useState(Date.now()); // Force re-rendering with a unique key
 
   // Find the selected location if it exists
   const selectedLocation = selectedLocationId && locations?.length 
     ? locations.find(loc => loc.id === selectedLocationId)
     : undefined;
-  
-  // More robust fix for mobile map rendering issues
-  useEffect(() => {
-    let mounted = true;
     
-    // Initial delay to ensure DOM is ready
-    const initialTimeout = setTimeout(() => {
-      if (mounted) {
-        window.dispatchEvent(new Event('resize'));
-      }
+  // Fix for map not rendering on mobile by triggering a resize event
+  useEffect(() => {
+    // Delay to ensure the DOM has fully rendered
+    const timeout = setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+      setMapReady(true);
     }, 100);
     
-    // Set up recurring checks/resizes to ensure map stays rendered
-    const checkInterval = setInterval(() => {
-      if (mounted) {
-        window.dispatchEvent(new Event('resize'));
-        
-        // If the map is still not loaded after 2 seconds, try re-mounting it
-        const mapElement = document.querySelector('.leaflet-container');
-        if (!mapReady && mapElement && !mapElement.clientHeight) {
-          console.log('Map failed to render, remounting...');
-          setMapKey(Date.now());
-        } else if (!mapReady && mapElement && mapElement.clientHeight) {
-          setMapReady(true);
-        }
-      }
-    }, 500);
-    
-    // Additional timeout to ensure map is fully loaded
-    const readyTimeout = setTimeout(() => {
-      if (mounted) {
-        setMapReady(true);
-      }
-    }, 1000);
-    
-    return () => {
-      mounted = false;
-      clearTimeout(initialTimeout);
-      clearTimeout(readyTimeout);
-      clearInterval(checkInterval);
-    };
-  }, [mapKey]);
+    return () => clearTimeout(timeout);
+  }, []);
 
   return (
-    <div 
-      style={{ height, width: '100%' }} 
-      className="location-map-container"
-      key={`map-container-${mapKey}`}
-    >
-      {/* Only show MapContainer after DOM is mounted */}
+    <div style={{ height, width: '100%' }} className="location-map-container">
       <MapContainer 
-        key={`map-${mapKey}`}
         center={defaultCenter} 
         zoom={defaultZoom} 
         style={{ height: '100%', width: '100%' }}
@@ -164,12 +126,12 @@ const LocationMap = ({
                 <p className="text-sm text-neutral-500">{location.region} Region</p>
                 {interactive && (
                   <div className="mt-2">
-                    <span
+                    <button
                       onClick={() => navigate(`/location/${location.id}`)}
-                      className="px-3 py-1 text-xs bg-[#005ea2] text-white rounded hover:bg-[#00477b] cursor-pointer inline-block"
+                      className="px-3 py-1 text-xs bg-[#005ea2] text-white rounded hover:bg-[#00477b]"
                     >
                       View Details
-                    </span>
+                    </button>
                   </div>
                 )}
               </div>
@@ -188,10 +150,7 @@ const LocationMap = ({
       {/* Loading overlay */}
       {!mapReady && (
         <div className="absolute inset-0 bg-neutral-100 flex items-center justify-center">
-          <div className="animate-pulse flex flex-col items-center">
-            <span className="material-icons text-neutral-400 text-3xl mb-2">map</span>
-            <div className="text-neutral-500">Loading map...</div>
-          </div>
+          <div className="text-neutral-500 animate-pulse">Loading map...</div>
         </div>
       )}
     </div>

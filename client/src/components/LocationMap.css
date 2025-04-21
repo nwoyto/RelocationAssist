@@ -2,32 +2,22 @@
 .location-map-container {
   position: relative;
   overflow: hidden;
-  min-height: 250px;
-  background-color: #f5f5f5;
-  border-radius: 4px;
-}
-
-/* Fix for Leaflet container on mobile */
-.leaflet-container {
-  width: 100% !important;
-  height: 100% !important;
-  z-index: 1 !important; /* Prevent map from appearing above modals/drawers */
-  border-radius: 4px;
-  background-color: #f5f5f5;
 }
 
 .mobile-map-fix {
-  touch-action: manipulation; /* Improves touch behavior on mobile */
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 0;
 }
 
 .map-loading {
   opacity: 0;
-  transition: opacity 0.5s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .map-ready {
   opacity: 1;
-  transition: opacity 0.5s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
 }
 
 /* Fix for mobile popups */
@@ -57,45 +47,5 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-  
-  /* Force map rendering workarounds for mobile WebKit */
-  .leaflet-container {
-    transform: translateZ(0); /* Forces hardware acceleration */
-    backface-visibility: hidden;
-    perspective: 1000px;
-  }
-  
-  /* Improve marker clickability on mobile */
-  .leaflet-marker-icon {
-    margin-left: -15px !important;
-    margin-top: -41px !important;
-    width: 30px !important;
-    height: 41px !important;
-    padding: 12px;
-    box-sizing: content-box;
-    background-color: transparent;
-    cursor: pointer !important;
-    z-index: 500 !important;
-  }
-  
-  /* Force marker to be above other elements */
-  .leaflet-marker-pane {
-    z-index: 600 !important;
-  }
-  
-  /* Make popup contents clickable */
-  .leaflet-popup-content {
-    cursor: default;
-    pointer-events: auto !important;
-  }
-  
-  /* Make popup close button easier to tap */
-  .leaflet-popup-close-button {
-    font-size: 18px !important;
-    padding: 8px !important;
-    width: 30px !important;
-    height: 30px !important;
-    z-index: 800 !important;
   }
 }
