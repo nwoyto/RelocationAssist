@@ -1,9 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Icon, LatLngTuple } from 'leaflet';
 import { Location } from '@/lib/types';
 import { useLocation } from 'wouter';
 import 'leaflet/dist/leaflet.css';
+
+// Add custom styles for better mobile experience
+import './LocationMap.css';
 
 // Fix for marker icon issues in React Leaflet
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
@@ -69,14 +72,26 @@ const LocationMap = ({
   interactive = true
 }: LocationMapProps) => {
   const [, navigate] = useLocation();
+  const [mapReady, setMapReady] = useState(false);
 
   // Find the selected location if it exists
   const selectedLocation = selectedLocationId && locations?.length 
     ? locations.find(loc => loc.id === selectedLocationId)
     : undefined;
+    
+  // Fix for map not rendering on mobile by triggering a resize event
+  useEffect(() => {
+    // Delay to ensure the DOM has fully rendered
+    const timeout = setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+      setMapReady(true);
+    }, 100);
+    
+    return () => clearTimeout(timeout);
+  }, []);
 
   return (
-    <div style={{ height, width: '100%' }}>
+    <div style={{ height, width: '100%' }} className="location-map-container">
       <MapContainer 
         center={defaultCenter} 
         zoom={defaultZoom} 
@@ -84,6 +99,8 @@ const LocationMap = ({
         zoomControl={interactive}
         scrollWheelZoom={interactive}
         dragging={interactive}
+        className={`mobile-map-fix ${mapReady ? 'map-ready' : 'map-loading'}`}
+        attributionControl={false}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -107,14 +124,16 @@ const LocationMap = ({
               <div className="text-center">
                 <h3 className="font-medium mb-1">{location.name}, {location.state}</h3>
                 <p className="text-sm text-neutral-500">{location.region} Region</p>
-                <div className="mt-2">
-                  <button
-                    onClick={() => navigate(`/location/${location.id}`)}
-                    className="px-3 py-1 text-xs bg-[#005ea2] text-white rounded hover:bg-[#00477b]"
-                  >
-                    View Details
-                  </button>
-                </div>
+                {interactive && (
+                  <div className="mt-2">
+                    <button
+                      onClick={() => navigate(`/location/${location.id}`)}
+                      className="px-3 py-1 text-xs bg-[#005ea2] text-white rounded hover:bg-[#00477b]"
+                    >
+                      View Details
+                    </button>
+                  </div>
+                )}
               </div>
             </Popup>
           </Marker>
@@ -127,6 +146,13 @@ const LocationMap = ({
           selectedLocation={selectedLocation} 
         />
       </MapContainer>
+      
+      {/* Loading overlay */}
+      {!mapReady && (
+        <div className="absolute inset-0 bg-neutral-100 flex items-center justify-center">
+          <div className="text-neutral-500 animate-pulse">Loading map...</div>
+        </div>
+      )}
     </div>
   );
 };
